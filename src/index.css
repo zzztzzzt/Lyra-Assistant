@@ -12,12 +12,12 @@
     @apply appearance-none outline-none m-0 p-0 select-none touch-none;
 }
 
-@utility card-header-shape {
+@utility card-shape-header {
     @apply max-h-50 aspect-golden rounded-lg;
 }
 
 @utility card-header {
-    @apply appearance-none outline-none m-0 p-0 select-none touch-none;
+    @apply border-4 border-default-gray hover:border-white text-default-gray hover:text-black flex items-center cursor-pointer duration-600;
 }
 
 @layer base {
