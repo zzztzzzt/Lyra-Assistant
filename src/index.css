@@ -1,1 +1,39 @@
 @import "tailwindcss";
+
+@theme {
+    --font-prosto-one: "Prosto One", sans-serif;
+
+    --color-default-gray: #C3C3C3;
+
+    --aspect-golden: 1 / 1.618;
+}
+
+@utility color-slider {
+    @apply appearance-none outline-none m-0 p-0 select-none touch-none;
+}
+
+@utility card-header-shape {
+    @apply max-h-50 aspect-golden rounded-lg;
+}
+
+@utility card-header {
+    @apply appearance-none outline-none m-0 p-0 select-none touch-none;
+}
+
+@layer base {
+    .color-slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 8px;
+        height: 8px;
+        background: white;
+        border-radius: 50%;
+        box-shadow: 0 0 10px rgba(255,255,255,0.8);
+        cursor: grab;
+        border: 2px solid transparent;
+    }
+    
+    .color-slider::-webkit-slider-thumb:active {
+        transform: scale(1.4);
+        cursor: grabbing;
+    }
+}

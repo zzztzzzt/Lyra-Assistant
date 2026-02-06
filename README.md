@@ -24,8 +24,10 @@ Django License : [https://github.com/django/django/blob/main/LICENSE](https://gi
 <br>
 Strawberry-Django License : [https://github.com/strawberry-graphql/strawberry-django/blob/main/LICENSE](https://github.com/strawberry-graphql/strawberry-django/blob/main/LICENSE)
 
-Lyra-Assistant uses React for Frontend Design. And uses Bun as build tool. React licensed under the MIT License. Bun has additional description in their license page, please see link below.
+Lyra-Assistant uses React & Tailwind CSS for Frontend Design. And uses Bun as build tool. React & Tailwind CSS licensed under the MIT License. Bun has additional description in their license page, please see link below.
 
 React License : [https://github.com/facebook/react/blob/main/LICENSE](https://github.com/facebook/react/blob/main/LICENSE)
+<br>
+Tailwind CSS License : [https://github.com/tailwindlabs/tailwindcss/blob/main/LICENSE](https://github.com/tailwindlabs/tailwindcss/blob/main/LICENSE)
 <br>
 Bun License : [https://github.com/oven-sh/bun/blob/main/LICENSE.md](https://github.com/oven-sh/bun/blob/main/LICENSE.md)
