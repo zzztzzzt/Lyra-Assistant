@@ -35,7 +35,7 @@ const ColorController: React.FC<ControllerProps> = ({ color, setColor }) => {
   return (
     <div className="font-prosto-one w-full space-y-6">
       <div className="">
-        <div className="h-10 rounded-lg relative overflow-hidden bg-gray-200/80">
+        <div className="h-10 xl:h-11 rounded-lg relative overflow-hidden bg-gray-200/80">
           
           {/* Use a mask to make the color only appear near the lever */}
           <div 
@@ -75,7 +75,7 @@ const ColorController: React.FC<ControllerProps> = ({ color, setColor }) => {
 const ControlRow: React.FC<ControlRowProps> = ({ val, max, step, onChange, grad, showGrid = true }) => (
   <div
     className={`
-      relative w-full h-10 overflow-hidden
+      relative w-full h-10 xl:h-11 overflow-hidden
       ${showGrid ? 'rounded-r-lg' : 'rounded-lg'}
     `}
   >
