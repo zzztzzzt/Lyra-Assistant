@@ -17,7 +17,15 @@
 }
 
 @utility card-header {
-    @apply border-4 border-default-gray hover:border-white text-default-gray hover:text-black flex items-center cursor-pointer duration-600;
+    @apply border-4 border-default-gray text-default-gray flex items-center cursor-pointer duration-600;
+}
+
+@utility dark-card-hover {
+    @apply hover:text-white hover:border-black;
+}
+
+@utility light-card-hover {
+    @apply hover:text-black hover:border-white;
 }
 
 @layer base {

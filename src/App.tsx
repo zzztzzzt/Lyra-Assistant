@@ -29,17 +29,23 @@ const getMidColor = (colorA: OklchState, colorB: OklchState): OklchState => {
 };
 
 export function App() {
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
+
   const [colorM, setColorM] = useState<OklchState>({ l: 0.92, c: 0.141, h: 252 });
   const accentM = useMemo(() => toStr(colorM), [colorM]);
 
   return (
-    <>
+    <div className={`duration-600 ${ isDarkMode? "bg-black" : "" }`}>
       <Header
         colorM={colorM}
         setColorM={setColorM}
         accentM={accentM}
+        isDarkMode={isDarkMode}
+        setIsDarkMode={setIsDarkMode}
       />
-    </>
+
+
+    </div>
   );
 }
 
