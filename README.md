@@ -13,7 +13,7 @@
 
 IMPORTANT : This project is still in the development and testing stages, licensing terms may be updated in the future. Please don't do any commercial usage currently.
 
-## Project Dependencies Details
+## Project Dependencies Guide
 
 [![Django](https://img.shields.io/badge/Django-092E20?style=for-the-badge&logo=django&logoColor=white)](https://github.com/django/django)
 [![Strawberry GraphQL](https://img.shields.io/badge/Strawberry_GraphQL-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://github.com/strawberry-graphql/strawberry-django)
@@ -21,16 +21,24 @@ IMPORTANT : This project is still in the development and testing stages, licensi
 [![Bun](https://img.shields.io/badge/Bun-000000?style=for-the-badge&logo=bun&logoColor=white)](https://github.com/oven-sh/bun)
 [![Tailwind CSS](https://img.shields.io/badge/tailwind_css-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://github.com/tailwindlabs/tailwindcss)
 
-Lyra-Assistant uses Django & Strawberry-Django for backend. Django licensed under the BSD 3-Clause License. Strawberry-Django licensed under the MIT License.
+**[ for Dependencies Details please see the end of this README ]**
 
-Django License : [https://github.com/django/django/blob/main/LICENSE](https://github.com/django/django/blob/main/LICENSE)
-<br>
-Strawberry-Django License : [https://github.com/strawberry-graphql/strawberry-django/blob/main/LICENSE](https://github.com/strawberry-graphql/strawberry-django/blob/main/LICENSE)
+Lyra-Assistant uses Django & Strawberry-Django for backend. Django licensed under the BSD 3-Clause License. Strawberry-Django licensed under the MIT License.
 
 Lyra-Assistant uses React & Tailwind CSS for Frontend Design. And uses Bun as build tool. React & Tailwind CSS licensed under the MIT License. Bun has additional description in their license page, please see link below.
 
+## Project Dependencies Details
+
+Django License : [https://github.com/django/django/blob/main/LICENSE](https://github.com/django/django/blob/main/LICENSE)
+<br>
+
+Strawberry-Django License : [https://github.com/strawberry-graphql/strawberry-django/blob/main/LICENSE](https://github.com/strawberry-graphql/strawberry-django/blob/main/LICENSE)
+<br>
+
 React License : [https://github.com/facebook/react/blob/main/LICENSE](https://github.com/facebook/react/blob/main/LICENSE)
 <br>
+
 Tailwind CSS License : [https://github.com/tailwindlabs/tailwindcss/blob/main/LICENSE](https://github.com/tailwindlabs/tailwindcss/blob/main/LICENSE)
 <br>
+
 Bun License : [https://github.com/oven-sh/bun/blob/main/LICENSE.md](https://github.com/oven-sh/bun/blob/main/LICENSE.md)
