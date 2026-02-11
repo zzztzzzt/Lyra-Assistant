@@ -20,7 +20,7 @@ const Header: React.FC<Props> = ({ colorM, setColorM, accentM, isDarkMode, setIs
   return(
     <div>
       <div className="flex flex-col md:flex-row items-center justify-center max-md:space-y-3 md:gap-3 xl:gap-5 py-8 md:py-12 xl:py-14 text-2xl xl:text-4xl text-default-gray font-prosto-one">
-        <div className="flex-1 h-1 w-full bg-black" style={{ backgroundImage: `linear-gradient(270deg in oklch, ${accentM}, ${ isDarkMode? "black" : "white" })` }}></div>
+        <div className="decorative-line" style={{ backgroundImage: `linear-gradient(270deg in oklch, ${accentM}, ${ isDarkMode? "black" : "white" })` }}></div>
         
         <div>
           Lyra
@@ -56,7 +56,7 @@ const Header: React.FC<Props> = ({ colorM, setColorM, accentM, isDarkMode, setIs
           </a>
         </div>
 
-        <div className="flex-1 h-1 w-full bg-black" style={{ backgroundImage: `linear-gradient(90deg in oklch, ${accentM}, ${ isDarkMode? "black" : "white" })` }}></div>
+        <div className="decorative-line" style={{ backgroundImage: `linear-gradient(90deg in oklch, ${accentM}, ${ isDarkMode? "black" : "white" })` }}></div>
       </div>
 
       <div className="xl:max-w-320 xl:mx-auto xl:flex xl:flex-row xl:justify-between xl:items-center">

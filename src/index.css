@@ -30,6 +30,10 @@
     @apply hover:text-black hover:border-white;
 }
 
+@utility decorative-line {
+    @apply flex-1 h-1 w-full;
+}
+
 @layer base {
     .color-slider::-webkit-slider-thumb {
         -webkit-appearance: none;
