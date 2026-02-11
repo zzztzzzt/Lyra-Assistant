@@ -127,7 +127,7 @@ export function App() {
         handlePredict={handlePredict}
       />
 
-      <div className="max-w-120 md:max-w-240 xl:max-w-320 mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 xl:gap-12">
+      <div className="container-for-gradient-boxes">
         {primaryPairs.map(([a, b], i) => {
           const colorA = palette[a];
           const colorB = palette[b];
@@ -155,7 +155,7 @@ export function App() {
           DERIVED COLOR
         </div>
       )}
-      <div className="max-w-120 md:max-w-240 xl:max-w-320 mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 xl:gap-12 pb-22">
+      <div className="container-for-gradient-boxes pb-22">
         {derivedPairs.map(([a, b], i) => {
           const colorA = palette[a];
           const colorB = palette[b];

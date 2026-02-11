@@ -34,6 +34,10 @@
     @apply flex-1 h-1 w-full;
 }
 
+@utility container-for-gradient-boxes {
+    @apply max-w-120 md:max-w-240 xl:max-w-320 mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 xl:gap-12;
+}
+
 @layer base {
     .color-slider::-webkit-slider-thumb {
         -webkit-appearance: none;
