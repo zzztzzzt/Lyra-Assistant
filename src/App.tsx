@@ -21,6 +21,19 @@ const arrToOklch = ([l, c, h]: [number, number, number]): OklchState => ({ l, c,
 
 const toStr = (col: OklchState) => `oklch(${(col.l * 100).toFixed(0)}% ${col.c.toFixed(3)} ${col.h})`;
 
+type GradientPair = {
+  colorA: OklchState;
+  colorB: OklchState;
+  hexA: string;
+  hexB: string;
+};
+
+const pairIndices: [number, number][] = [
+  [0, 2], // 1 & 3
+  [3, 5], // 4 & 6
+  [6, 8], // 7 & 9
+];
+
 export function App() {
   const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
 
@@ -30,41 +43,81 @@ export function App() {
   const [palette, setPalette] = useState<OklchState[]>([]);
   const [hexPalette, setHexPalette] = useState<string[]>([]);
 
+  const fetchPrediction = async (color: OklchState): Promise<PredictResponse> => {
+    const response = await fetch(
+      `http://localhost:8000/api/predict?oklch=${color.l},${color.c},${color.h}`
+    );
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || "Failed to get prediction data");
+    }
+
+    return response.json();
+  };
+
+  const buildPairs = (colors: OklchState[], hexes: string[]): GradientPair[] => {
+    const pairs: GradientPair[] = [];
+
+    for (const [a, b] of pairIndices) {
+      const colorA = colors[a];
+      const colorB = colors[b];
+      const hexA = hexes[a];
+      const hexB = hexes[b];
+
+      if (!colorA || !colorB || !hexA || !hexB) continue;
+
+      pairs.push({ colorA, colorB, hexA, hexB });
+    }
+
+    return pairs;
+  };
+
   const handlePredict = async () => {
     try {
-      const response = await fetch(
-        `http://localhost:8000/api/predict?oklch=${colorM.l},${colorM.c},${colorM.h}`
-      );
-  
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || "Failed to get prediction data");
-      }
-  
-      const result: PredictResponse = await response.json();
-  
-      // palette_oklch → OklchState[]
-      const nextPalette = result.palette_oklch.map(arrToOklch);
-      setPalette(nextPalette);
+      // First fetch: build the original 3 pairs from 1/3, 4/6, 7/9
+      const firstResult = await fetchPrediction(colorM);
+      const firstPalette = firstResult.palette_oklch.map(arrToOklch);
+      const firstHexPalette = firstResult.palette_hex;
 
-      // palette_hex → string[]
-      const nextHexPalette = result.palette_hex;
-      setHexPalette(nextHexPalette);
-  
+      // Seeds are the 2nd, 5th, 8th colors (indices 1, 4, 7)
+      const seeds = [1, 4, 7]
+        .map((index) => firstPalette[index])
+        .filter((seed): seed is OklchState => Boolean(seed));
+
+      // Second fetches: each seed returns another 9-color palette -> 3 pairs each
+      const secondResults = await Promise.all(seeds.map((seed) => fetchPrediction(seed)));
+
+      const allPairs: GradientPair[] = [
+        ...buildPairs(firstPalette, firstHexPalette),
+        ...secondResults.flatMap((result) =>
+          buildPairs(result.palette_oklch.map(arrToOklch), result.palette_hex)
+        ),
+      ];
+
+      // Flatten into the existing palette/hexPalette states used by UI rendering
+      setPalette(allPairs.flatMap((pair) => [pair.colorA, pair.colorB]));
+      setHexPalette(allPairs.flatMap((pair) => [pair.hexA, pair.hexB]));
+
       console.log("Prediction data fetched successfully");
     } catch (error) {
       console.error("Error fetching prediction data:", error);
     }
   };
 
-  const gradientPairs: [number, number][] = [
-    [0, 2], // 1 & 3
-    [3, 5], // 4 & 6
-    [6, 8], // 7 & 9
-  ];
+  const gradientPairs = useMemo(() => {
+    const pairs: [number, number][] = [];
+    for (let i = 0; i < palette.length; i += 2) {
+      if (palette[i + 1]) pairs.push([i, i + 1]);
+    }
+    return pairs;
+  }, [palette]);
+
+  const primaryPairs = gradientPairs.slice(0, 3);
+  const derivedPairs = gradientPairs.slice(3);
 
   return (
-    <div className={`duration-600 ${ isDarkMode? "bg-black" : "" }`}>
+    <div className={`duration-600 ${isDarkMode ? "bg-black" : ""}`}>
       <Header
         colorM={colorM}
         setColorM={setColorM}
@@ -75,7 +128,7 @@ export function App() {
       />
 
       <div className="max-w-120 md:max-w-240 xl:max-w-320 mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 xl:gap-12">
-        {gradientPairs.map(([a, b], i) => {
+        {primaryPairs.map(([a, b], i) => {
           const colorA = palette[a];
           const colorB = palette[b];
           const hexA = hexPalette[a];
@@ -87,6 +140,34 @@ export function App() {
           return (
             <GradientBox
               key={i}
+              colorA={colorA}
+              colorB={colorB}
+              hexA={hexA}
+              hexB={hexB}
+              isDarkMode={isDarkMode}
+              toStr={toStr}
+            />
+          );
+        })}
+      </div>
+      {derivedPairs.length > 0 && (
+        <div className="mt-20 mb-4 text-center text-2xl md:text-3xl uppercase tracking-[0.2em] font-prosto-one text-default-gray">
+          DERIVED COLOR
+        </div>
+      )}
+      <div className="max-w-120 md:max-w-240 xl:max-w-320 mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 xl:gap-12 pb-22">
+        {derivedPairs.map(([a, b], i) => {
+          const colorA = palette[a];
+          const colorB = palette[b];
+          const hexA = hexPalette[a];
+          const hexB = hexPalette[b];
+
+          if (!colorA || !colorB) return null;
+          if (!hexA || !hexB) return null;
+
+          return (
+            <GradientBox
+              key={`derived-${i}`}
               colorA={colorA}
               colorB={colorB}
               hexA={hexA}
