@@ -6,6 +6,8 @@
     --color-default-gray: #C3C3C3;
 
     --aspect-golden: 1 / 1.618;
+
+    --radius-gradient-card: 4.5rem;
 }
 
 @utility color-slider {

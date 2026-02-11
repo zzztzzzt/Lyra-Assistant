@@ -11,9 +11,10 @@ interface Props {
   accentM: string;
   isDarkMode: boolean;
   setIsDarkMode: React.Dispatch<React.SetStateAction<boolean>>;
+  handlePredict: () => void;
 }
 
-const Header: React.FC<Props> = ({ colorM, setColorM, accentM, isDarkMode, setIsDarkMode }) => {
+const Header: React.FC<Props> = ({ colorM, setColorM, accentM, isDarkMode, setIsDarkMode, handlePredict }) => {
   const [isMoonCardHovered, setIsMoonCardHovered] = useState<boolean>(false);
 
   return(
@@ -85,6 +86,7 @@ const Header: React.FC<Props> = ({ colorM, setColorM, accentM, isDarkMode, setIs
               ${ isDarkMode? "dark-card-hover hover:bg-black" : "light-card-hover hover:bg-white" }
             `}
             style={{ boxShadow: `0 0 10px 3px ${accentM}` }}
+            onClick={handlePredict}
           >
             GO
           </div>
