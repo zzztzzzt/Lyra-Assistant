@@ -19,7 +19,9 @@ const Header: React.FC<Props> = ({ colorM, setColorM, accentM, isDarkMode, setIs
 
   return(
     <div>
-      <div className="flex flex-col md:flex-row items-center justify-center max-md:space-y-3 md:gap-3 xl:gap-5 py-8 md:py-12 text-2xl xl:text-4xl text-default-gray font-prosto-one">
+      <div className="flex flex-col md:flex-row items-center justify-center max-md:space-y-3 md:gap-3 xl:gap-5 py-8 md:py-12 xl:py-14 text-2xl xl:text-4xl text-default-gray font-prosto-one">
+        <div className="flex-1 h-1 w-full bg-black" style={{ backgroundImage: `linear-gradient(270deg in oklch, ${accentM}, ${ isDarkMode? "black" : "white" })` }}></div>
+        
         <div>
           Lyra
           <a
@@ -53,13 +55,15 @@ const Header: React.FC<Props> = ({ colorM, setColorM, accentM, isDarkMode, setIs
             GitHub {'>'}
           </a>
         </div>
+
+        <div className="flex-1 h-1 w-full bg-black" style={{ backgroundImage: `linear-gradient(90deg in oklch, ${accentM}, ${ isDarkMode? "black" : "white" })` }}></div>
       </div>
 
-      <div className="xl:max-w-375 xl:mx-auto xl:flex xl:flex-row xl:justify-between xl:items-center">
+      <div className="xl:max-w-320 xl:mx-auto xl:flex xl:flex-row xl:justify-between xl:items-center">
         <div className="mx-auto h-50 w-full max-w-120 grid grid-cols-3 px-6 gap-6">
           <div
-            className={`card-shape-header card-header px-5 ${ isDarkMode? "dark-card-hover" : "light-card-hover" }`}
-            style={{ boxShadow: `0 0 10px 3px ${accentM}` }}
+            className={`card-shape-header card-header px-4 ${ isDarkMode? "dark-card-hover" : "light-card-hover" }`}
+            style={{ boxShadow: `0 0 10px 3px oklch(from ${ accentM } l c h / 0.5)` }}
           >
             <div className="fill-current w-full h-auto">
               <HuggingFaceIcon />
@@ -67,7 +71,7 @@ const Header: React.FC<Props> = ({ colorM, setColorM, accentM, isDarkMode, setIs
           </div>
           <div
             className={`card-shape-header card-header px-1 ${ isDarkMode? "dark-card-hover" : "light-card-hover" }`}
-            style={{ boxShadow: `0 0 10px 3px ${accentM}` }}
+            style={{ boxShadow: `0 0 10px 3px oklch(from ${ accentM } l c h / 0.5)` }}
           >
             <div className="fill-current w-full h-auto">
               <LyraAssistantIcon />            
@@ -78,21 +82,21 @@ const Header: React.FC<Props> = ({ colorM, setColorM, accentM, isDarkMode, setIs
           </div>
         </div>
 
-        <div className="mx-auto py-8 xl:py-0 px-6 xl:w-full max-xl:max-w-120 flex items-center"><ColorController color={colorM} setColor={setColorM} /></div>
+        <div className="mx-auto xl:-mt-5.5 py-8 xl:py-0 px-6 xl:px-3 xl:w-full max-xl:max-w-120"><ColorController color={colorM} setColor={setColorM} /></div>
 
         <div className="mx-auto h-50 w-full max-w-120 grid grid-cols-3 px-6 gap-6">
           <div
             className={`card-shape-header card-header px-4 justify-center font-prosto-one text-white text-4xl bg-default-gray
               ${ isDarkMode? "dark-card-hover hover:bg-black" : "light-card-hover hover:bg-white" }
             `}
-            style={{ boxShadow: `0 0 10px 3px ${accentM}` }}
+            style={{ boxShadow: `0 0 10px 3px oklch(from ${ accentM } l c h / 0.5)` }}
             onClick={handlePredict}
           >
             GO
           </div>
           <div
             className={`card-shape-header card-header px-1 justify-center ${ isDarkMode? "dark-card-hover" : "light-card-hover" }`}
-            style={{ boxShadow: `0 0 10px 3px ${accentM}` }}
+            style={{ boxShadow: `0 0 10px 3px oklch(from ${ accentM } l c h / 0.5)` }}
             onMouseEnter={() => setIsMoonCardHovered(true)}
             onMouseLeave={() => setIsMoonCardHovered(false)}
             onClick={() => setIsDarkMode(!isDarkMode)}
@@ -104,14 +108,14 @@ const Header: React.FC<Props> = ({ colorM, setColorM, accentM, isDarkMode, setIs
             >
               <div
                 className={`rounded-full duration-600
-                  ${ isDarkMode? "ml-0 bg-black h-11 w-11" : "ml-6 bg-white h-9 w-9" }
+                  ${ isDarkMode? "ml-0 bg-black h-12 w-12" : "ml-6 bg-white h-9 w-9" }
                 `}
               ></div>
             </div>
           </div>
           <div
             className={`card-shape-header card-header px-4 justify-center font-prosto-one text-2xl ${ isDarkMode? "dark-card-hover" : "light-card-hover" }`}
-            style={{ boxShadow: `0 0 10px 3px ${accentM}` }}
+            style={{ boxShadow: `0 0 10px 3px oklch(from ${ accentM } l c h / 0.5)` }}
           >
             Undo
           </div>

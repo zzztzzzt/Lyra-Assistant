@@ -28,6 +28,7 @@ export function App() {
   const accentM = useMemo(() => toStr(colorM), [colorM]);
 
   const [palette, setPalette] = useState<OklchState[]>([]);
+  const [hexPalette, setHexPalette] = useState<string[]>([]);
 
   const handlePredict = async () => {
     try {
@@ -45,17 +46,16 @@ export function App() {
       // palette_oklch → OklchState[]
       const nextPalette = result.palette_oklch.map(arrToOklch);
       setPalette(nextPalette);
+
+      // palette_hex → string[]
+      const nextHexPalette = result.palette_hex;
+      setHexPalette(nextHexPalette);
   
-      console.log("Prediction data fetched successfully:", nextPalette);
+      console.log("Prediction data fetched successfully");
     } catch (error) {
       console.error("Error fetching prediction data:", error);
     }
   };
-
-  const paletteStr = useMemo(
-    () => palette.map(toStr),
-    [palette]
-  );
 
   const gradientPairs: [number, number][] = [
     [0, 2], // 1 & 3
@@ -74,23 +74,23 @@ export function App() {
         handlePredict={handlePredict}
       />
 
-      <div className="max-w-120 md:max-w-240 xl:max-w-375 mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 xl:gap-16">
+      <div className="max-w-120 md:max-w-240 xl:max-w-320 mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 xl:gap-12">
         {gradientPairs.map(([a, b], i) => {
           const colorA = palette[a];
           const colorB = palette[b];
-          const accentA = paletteStr[a];
-          const accentB = paletteStr[b];
+          const hexA = hexPalette[a];
+          const hexB = hexPalette[b];
 
           if (!colorA || !colorB) return null;
-          if (!accentA || !accentB) return null;
+          if (!hexA || !hexB) return null;
 
           return (
             <GradientBox
               key={i}
               colorA={colorA}
               colorB={colorB}
-              accentA={accentA}
-              accentB={accentB}
+              hexA={hexA}
+              hexB={hexB}
               isDarkMode={isDarkMode}
               toStr={toStr}
             />
