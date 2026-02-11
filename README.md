@@ -27,8 +27,6 @@ Lyra-Assistant uses Django & Strawberry-Django for backend. Django licensed unde
 
 Lyra-Assistant uses React & Tailwind CSS for Frontend Design. And uses Bun as build tool. React & Tailwind CSS licensed under the MIT License. Bun has additional description in their license page, please see link below.
 
-## Lyra-Assistant Showcase
-
 ![1.0showcase](https://github.com/zzztzzzt/Lyra-Assistant/blob/main/showcase/Lyra_Assistant_1.0_showcase.webp)
 
 ## Project Dependencies Details
