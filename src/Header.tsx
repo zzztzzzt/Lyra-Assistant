@@ -102,13 +102,14 @@ const Header: React.FC<Props> = ({ colorM, setColorM, accentM, isDarkMode, setIs
             onClick={() => setIsDarkMode(!isDarkMode)}
           >
             <div
-              className={`h-15 w-15 rounded-full flex items-center justify-center duration-600
+              className={`rounded-full flex items-center justify-center duration-600
                 ${ isMoonCardHovered? isDarkMode? "bg-white" : "bg-black" : "bg-default-gray" }
+                ${ isDarkMode? "h-12 w-12 shadow-sun" : "h-15 w-15" }
               `}
             >
               <div
                 className={`rounded-full duration-600
-                  ${ isDarkMode? "ml-0 bg-black h-12 w-12" : "ml-6 bg-white h-9 w-9" }
+                  ${ isDarkMode? "ml-0 bg-black h-0 w-0" : "ml-6 bg-white h-9 w-9" }
                 `}
               ></div>
             </div>
@@ -117,7 +118,7 @@ const Header: React.FC<Props> = ({ colorM, setColorM, accentM, isDarkMode, setIs
             className={`card-shape-header card-header px-4 justify-center font-prosto-one text-2xl ${ isDarkMode? "dark-card-hover" : "light-card-hover" }`}
             style={{ boxShadow: `0 0 10px 3px oklch(from ${ accentM } l c h / 0.5)` }}
           >
-            Undo
+            Tools
           </div>
         </div>
 

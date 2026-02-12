@@ -8,6 +8,8 @@
     --aspect-golden: 1 / 1.618;
 
     --radius-gradient-card: 4rem;
+
+    --shadow-sun: 0 0 6px 6px rgba(255, 255, 255, 1);
 }
 
 @utility color-slider {

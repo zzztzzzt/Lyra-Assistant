@@ -11,21 +11,29 @@ interface Props {
 }
 
 const getMidColor = (colorA: OklchState, colorB: OklchState): OklchState => {
-  let h1 = colorA.h;
-  let h2 = colorB.h;
+  // Convert OKLCH to OKLab (a, b)
+  const toRad = (deg: number) => (deg * Math.PI) / 180;
+  const toDeg = (rad: number) => (rad * 180) / Math.PI;
 
-  let diff = h2 - h1;
-  if (diff > 180) {
-    h2 -= 360;
-  } else if (diff < -180) {
-    h2 += 360;
-  }
+  const a1 = colorA.c * Math.cos(toRad(colorA.h));
+  const b1 = colorA.c * Math.sin(toRad(colorA.h));
+  
+  const a2 = colorB.c * Math.cos(toRad(colorB.h));
+  const b2 = colorB.c * Math.sin(toRad(colorB.h));
 
-  let hMid = (h1 + h2) / 2;
-  // Ensure the result returns to the positive range of 0-360
-  hMid = (hMid + 360) % 360;
+  // Linearly interpolate in OKLab space ( matches how CSS linear-gradient(in oklab, ...) )
+  const midL = (colorA.l + colorB.l) / 2;
+  const midA = (a1 + a2) / 2;
+  const midB = (b1 + b2) / 2;
 
-  return { l: (colorA.l + colorB.l) / 2, c: (colorA.c + colorB.c) / 2, h: hMid };
+  // Convert back to OKLCH
+  const midC = Math.sqrt(midA * midA + midB * midB);
+  let midH = toDeg(Math.atan2(midB, midA));
+  
+  // Normalize hue to the range [0, 360)
+  midH = (midH + 360) % 360;
+
+  return { l: midL, c: midC, h: midH };
 };
 
 const GradientBox: React.FC<Props> = ({ colorA, colorB, hexA, hexB, isDarkMode, toStr }) => {
@@ -40,7 +48,7 @@ const GradientBox: React.FC<Props> = ({ colorA, colorB, hexA, hexB, isDarkMode, 
     >
       <div
         className="h-15/32 w-auto mt-14 py-12.5 px-11.5 aspect-golden rounded-3xl bg-black"
-        style={{ background: `linear-gradient(180deg, ${accentA}, ${accentB})` }}
+        style={{ background: `linear-gradient(180deg in oklab, ${accentA}, ${accentB})` }}
       >
         <div
           className={`h-full w-full rounded-xl duration-600 ${ isDarkMode? "bg-black" : "bg-white" }`}
