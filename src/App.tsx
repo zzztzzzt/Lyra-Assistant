@@ -15,6 +15,7 @@ interface PredictResponse {
   input_oklch: [number, number, number];
   palette_hex: string[];
   palette_oklch: [number, number, number][];
+  boldness: number;
 }
 
 const arrToOklch = ([l, c, h]: [number, number, number]): OklchState => ({ l, c, h });

@@ -28,7 +28,7 @@ const Header: React.FC<Props> = ({ colorM, setColorM, accentM, isDarkMode, setIs
             className={`duration-600 ${ isDarkMode? "hover:!text-white" : "hover:!text-black" }`}
             style={{ color: accentM }} href="https://github.com/zzztzzzt/Lyra-AI"
           >
-            &nbsp;1.5&nbsp;
+            &nbsp;1.6&nbsp;
           </a>
           stable
         </div>
