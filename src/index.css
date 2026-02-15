@@ -9,7 +9,11 @@
 
     --radius-gradient-card: 4rem;
 
+    --radius-mode-panel: 3.5rem;
+
     --shadow-sun: 0 0 6px 6px rgba(255, 255, 255, 1);
+
+    --shadow-mode-panel: 0 0 6px 3px rgba(0, 0, 0, 0.1);
 }
 
 @utility color-slider {
@@ -38,6 +42,10 @@
 
 @utility container-for-gradient-boxes {
     @apply max-w-120 md:max-w-240 xl:max-w-320 mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 xl:gap-12;
+}
+
+@utility mode-panel-btn {
+    @apply w-full h-30 bg-white hover:bg-black text-lg md:text-2xl hover:text-white rounded-mode-panel flex justify-center items-center shadow-md cursor-pointer duration-600;
 }
 
 @layer base {

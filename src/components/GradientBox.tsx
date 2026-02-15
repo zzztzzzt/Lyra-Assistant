@@ -7,6 +7,9 @@ interface Props {
   hexA: string;
   hexB: string;
   isDarkMode: boolean;
+  isDefaultMode: boolean;
+  isCircularMode: boolean;
+  isClipMode: boolean;
   toStr: (col: OklchState) => string;
 }
 
@@ -36,7 +39,7 @@ const getMidColor = (colorA: OklchState, colorB: OklchState): OklchState => {
   return { l: midL, c: midC, h: midH };
 };
 
-const GradientBox: React.FC<Props> = ({ colorA, colorB, hexA, hexB, isDarkMode, toStr }) => {
+const GradientBox: React.FC<Props> = ({ colorA, colorB, hexA, hexB, isDarkMode, isDefaultMode, isCircularMode, isClipMode, toStr }) => {
   const accentA = useMemo(() => toStr(colorA), [colorA]);
   const accentB = useMemo(() => toStr(colorB), [colorB]);
   const accentMid = useMemo(() => toStr(getMidColor(colorA, colorB)), [colorA, colorB]);
@@ -46,15 +49,20 @@ const GradientBox: React.FC<Props> = ({ colorA, colorB, hexA, hexB, isDarkMode, 
       className="relative flex flex-col items-center h-140 xl:h-130 mx-6 mt-16 rounded-gradient-card text-default-gray font-prosto-one"
       style={{ boxShadow: `3px 3px 0 7px oklch(from ${ accentMid } l c h / 0.5)` }}
     >
-      <div
-        className="h-15/32 w-auto mt-14 py-12.5 px-11.5 aspect-golden rounded-3xl bg-black"
+      {isDefaultMode && <div
+        className="h-15/32 w-auto mt-14 py-12.5 px-11.5 aspect-golden rounded-3xl"
         style={{ background: `linear-gradient(180deg in oklab, ${accentA}, ${accentB})` }}
       >
         <div
           className={`h-full w-full rounded-xl duration-600 ${ isDarkMode? "bg-black" : "bg-white" }`}
           style={{ boxShadow: `inset 5px 5px 0 2px oklch(from ${ accentMid } l c h / 0.5)` }}
         ></div>
-      </div>
+      </div>}
+
+      {isCircularMode && <div
+        className="h-auto w-17/32 mt-14 aspect-square rounded-full"
+        style={{ background: `linear-gradient(45deg in oklab, ${accentA}, ${accentB})` }}
+      ></div>}
 
       <div className="my-auto flex flex-col items-center">
         <div className="text-base">{ accentA }</div>

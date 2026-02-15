@@ -1,6 +1,7 @@
 import "./index.css";
 import { useState, useMemo } from "react";
 import Header from "./Header";
+import ModePanel from "./components/ModePanel";
 import GradientBox from "./components/GradientBox";
 
 export interface OklchState {
@@ -36,6 +37,11 @@ const pairIndices: [number, number][] = [
 ];
 
 export function App() {
+  const [isModePanelOpen, setisModePanelOpen] = useState<boolean>(false);
+  const [isDefaultMode, setIsDefaultMode] = useState<boolean>(true);
+  const [isCircularMode, setIsCircularMode] = useState<boolean>(false);
+  const [isClipMode, setIsClipMode] = useState<boolean>(false);
+
   const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
 
   const [colorM, setColorM] = useState<OklchState>({ l: 0.92, c: 0.141, h: 252 });
@@ -119,10 +125,18 @@ export function App() {
 
   return (
     <div className={`duration-600 ${isDarkMode ? "bg-black" : ""}`}>
+      {isModePanelOpen && <ModePanel
+        isModePanelOpen={isModePanelOpen}
+        setisModePanelOpen={setisModePanelOpen}
+        setIsDefaultMode={setIsDefaultMode}
+        setIsCircularMode={setIsCircularMode}
+      />}
+
       <Header
         colorM={colorM}
         setColorM={setColorM}
         accentM={accentM}
+        setisModePanelOpen={setisModePanelOpen}
         isDarkMode={isDarkMode}
         setIsDarkMode={setIsDarkMode}
         handlePredict={handlePredict}
@@ -146,6 +160,9 @@ export function App() {
               hexA={hexA}
               hexB={hexB}
               isDarkMode={isDarkMode}
+              isDefaultMode={isDefaultMode}
+              isCircularMode={isCircularMode}
+              isClipMode={isClipMode}
               toStr={toStr}
             />
           );
@@ -174,6 +191,9 @@ export function App() {
               hexA={hexA}
               hexB={hexB}
               isDarkMode={isDarkMode}
+              isDefaultMode={isDefaultMode}
+              isCircularMode={isCircularMode}
+              isClipMode={isClipMode}
               toStr={toStr}
             />
           );

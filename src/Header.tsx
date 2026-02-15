@@ -2,19 +2,27 @@ import { useState } from "react";
 import type { OklchState } from "./App";
 import ColorController from "./components/ColorController";
 import GithubIcon from "./components/GitHubIcon";
-import HuggingFaceIcon from "./components/HuggingFaceIcon";
 import LyraAssistantIcon from "./components/LyraAssistantIcon";
 
 interface Props {
   colorM: OklchState;
   setColorM: React.Dispatch<React.SetStateAction<OklchState>>;
   accentM: string;
+  setisModePanelOpen: React.Dispatch<React.SetStateAction<boolean>>;
   isDarkMode: boolean;
   setIsDarkMode: React.Dispatch<React.SetStateAction<boolean>>;
   handlePredict: () => void;
 }
 
-const Header: React.FC<Props> = ({ colorM, setColorM, accentM, isDarkMode, setIsDarkMode, handlePredict }) => {
+const Header: React.FC<Props> = ({
+  colorM,
+  setColorM,
+  accentM,
+  setisModePanelOpen,
+  isDarkMode,
+  setIsDarkMode,
+  handlePredict
+}) => {
   const [isMoonCardHovered, setIsMoonCardHovered] = useState<boolean>(false);
 
   return(
@@ -62,12 +70,11 @@ const Header: React.FC<Props> = ({ colorM, setColorM, accentM, isDarkMode, setIs
       <div className="xl:max-w-320 xl:mx-auto xl:flex xl:flex-row xl:justify-between xl:items-center">
         <div className="mx-auto h-50 w-full max-w-120 grid grid-cols-3 px-6 gap-6">
           <div
-            className={`card-shape-header card-header px-4 ${ isDarkMode? "dark-card-hover" : "light-card-hover" }`}
+            className={`card-shape-header card-header px-4 justify-center font-prosto-one text-2xl ${ isDarkMode? "dark-card-hover" : "light-card-hover" }`}
             style={{ boxShadow: `0 0 10px 3px oklch(from ${ accentM } l c h / 0.5)` }}
+            onClick={() => setisModePanelOpen(true)}
           >
-            <div className="fill-current w-full h-auto">
-              <HuggingFaceIcon />
-            </div>
+            Mode
           </div>
           <div
             className={`card-shape-header card-header px-1 ${ isDarkMode? "dark-card-hover" : "light-card-hover" }`}
