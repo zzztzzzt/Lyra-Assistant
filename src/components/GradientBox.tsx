@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import type { OklchState } from "../App";
+import LyraAssistantIcon from "./LyraAssistantIcon";
 
 interface Props {
   colorA: OklchState;
@@ -63,6 +64,16 @@ const GradientBox: React.FC<Props> = ({ colorA, colorB, hexA, hexB, isDarkMode, 
         className="h-auto w-17/32 mt-14 aspect-square rounded-full"
         style={{ background: `linear-gradient(45deg in oklab, ${accentA}, ${accentB})` }}
       ></div>}
+
+      {isClipMode && (
+        <div className="h-1/2 w-auto mt-14 aspect-square">
+          <LyraAssistantIcon
+            className="w-full h-full"
+            gradientStart={accentA}
+            gradientEnd={accentB}
+          />
+        </div>
+      )}
 
       <div className="my-auto flex flex-col items-center">
         <div className="text-base">{ accentA }</div>

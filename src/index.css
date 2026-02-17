@@ -45,7 +45,7 @@
 }
 
 @utility mode-panel-btn {
-    @apply w-full h-30 bg-white hover:bg-black text-lg md:text-2xl hover:text-white rounded-mode-panel flex justify-center items-center shadow-md cursor-pointer duration-600;
+    @apply w-full h-30 bg-white hover:bg-black text-lg md:text-2xl hover:text-white rounded-mode-panel flex justify-center items-center text-center shadow-md cursor-pointer duration-600;
 }
 
 @layer base {

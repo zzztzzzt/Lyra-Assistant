@@ -7,9 +7,16 @@ interface Props {
   setisModePanelOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setIsDefaultMode: React.Dispatch<React.SetStateAction<boolean>>;
   setIsCircularMode: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsClipMode: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const ModePanel: React.FC<Props> = ({ isModePanelOpen, setisModePanelOpen, setIsDefaultMode, setIsCircularMode }) => {
+const ModePanel: React.FC<Props> = ({
+  isModePanelOpen,
+  setisModePanelOpen,
+  setIsDefaultMode,
+  setIsCircularMode,
+  setIsClipMode,
+}) => {
   const [visible, setVisible] = useState(false);
   const [mounted, setMounted] = useState(false);
 
@@ -57,11 +64,12 @@ const ModePanel: React.FC<Props> = ({ isModePanelOpen, setisModePanelOpen, setIs
               onClick={() => {
                 setIsDefaultMode(true);
                 setIsCircularMode(false);
+                setIsClipMode(false);
 
                 setisModePanelOpen(false)
               }}
             >
-              Lyra Default Mode
+              Lyra Default Mode <br className="md:hidden" />( OKLAB )
             </div>
 
             <div
@@ -69,14 +77,26 @@ const ModePanel: React.FC<Props> = ({ isModePanelOpen, setisModePanelOpen, setIs
               onClick={() => {
                 setIsDefaultMode(false);
                 setIsCircularMode(true);
+                setIsClipMode(false);
                 
                 setisModePanelOpen(false)
               }}
             >
-              Circular Mode
+              Circular Mode <br className="md:hidden" />( OKLAB )
             </div>
 
-            <div className="mode-panel-btn">Icon Clip Mode</div>
+            <div
+              className="mode-panel-btn"
+              onClick={() => {
+                setIsDefaultMode(false);
+                setIsCircularMode(false);
+                setIsClipMode(true);
+                
+                setisModePanelOpen(false)
+              }}
+            >
+              Icon Clip Mode <br className="md:hidden" />( sRGB )
+            </div>
           </div>
         </div>
       </div>

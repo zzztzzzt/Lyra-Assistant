@@ -130,6 +130,7 @@ export function App() {
         setisModePanelOpen={setisModePanelOpen}
         setIsDefaultMode={setIsDefaultMode}
         setIsCircularMode={setIsCircularMode}
+        setIsClipMode={setIsClipMode}
       />}
 
       <Header
