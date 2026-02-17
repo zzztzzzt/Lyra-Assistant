@@ -29,11 +29,11 @@ Lyra-Assistant uses React & Tailwind CSS for Frontend Design. And uses Bun as bu
 
 ![1.0showcase](https://github.com/zzztzzzt/Lyra-Assistant/blob/main/showcase/Lyra_Assistant_1.0_showcase.webp)
 
-( Gradients at Your Command )
+**( Gradients at Your Command )**
 
 ![1.0showcase2](https://github.com/zzztzzzt/Lyra-Assistant/blob/main/showcase/Lyra_Assistant_1.0_showcase_2.webp)
 
-( Dark Mode Support )
+**( Dark Mode Support )**
 
 ![1.0showcase3](https://github.com/zzztzzzt/Lyra-Assistant/blob/main/showcase/Lyra_Assistant_1.0_showcase_3.webp)
 
