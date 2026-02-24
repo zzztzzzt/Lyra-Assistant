@@ -23,18 +23,22 @@ const arrToOklch = ([l, c, h]: [number, number, number]): OklchState => ({ l, c,
 
 const toStr = (col: OklchState) => `oklch(${(col.l * 100).toFixed(0)}% ${col.c.toFixed(3)} ${col.h})`;
 
-type GradientPair = {
+type GradientTriple = {
   colorA: OklchState;
+  colorM: OklchState;
   colorB: OklchState;
   hexA: string;
+  hexM: string;
   hexB: string;
 };
 
-const pairIndices: [number, number][] = [
-  [0, 2], // 1 & 3
-  [3, 5], // 4 & 6
-  [6, 8], // 7 & 9
+const tripletIndices: [number, number, number][] = [
+  [0, 1, 2], // 1, 2, 3
+  [3, 4, 5], // 4, 5, 6
+  [6, 7, 8], // 7, 8, 9
 ];
+
+const seedIndices = [1, 4, 7];
 
 export function App() {
   const [isModePanelOpen, setisModePanelOpen] = useState<boolean>(false);
@@ -63,48 +67,64 @@ export function App() {
     return response.json();
   };
 
-  const buildPairs = (colors: OklchState[], hexes: string[]): GradientPair[] => {
-    const pairs: GradientPair[] = [];
+  const buildTriples = (
+    colors: OklchState[],
+    hexes: string[],
+  ): GradientTriple[] => {
+    const triples: GradientTriple[] = [];
 
-    for (const [a, b] of pairIndices) {
+    for (const [a, m, b] of tripletIndices) {
       const colorA = colors[a];
+      const colorM = colors[m];
       const colorB = colors[b];
       const hexA = hexes[a];
+      const hexM = hexes[m];
       const hexB = hexes[b];
 
-      if (!colorA || !colorB || !hexA || !hexB) continue;
+      if (!colorA || !colorM || !colorB || !hexA || !hexM || !hexB) continue;
 
-      pairs.push({ colorA, colorB, hexA, hexB });
+      triples.push({ colorA, colorM, colorB, hexA, hexM, hexB });
     }
 
-    return pairs;
+    return triples;
   };
 
   const handlePredict = async () => {
     try {
-      // First fetch: build the original 3 pairs from 1/3, 4/6, 7/9
+      // First fetch: build the original 3 pairs
       const firstResult = await fetchPrediction(colorM);
       const firstPalette = firstResult.palette_oklch.map(arrToOklch);
       const firstHexPalette = firstResult.palette_hex;
 
       // Seeds are the 2nd, 5th, 8th colors (indices 1, 4, 7)
-      const seeds = [1, 4, 7]
+      const seeds = seedIndices
         .map((index) => firstPalette[index])
         .filter((seed): seed is OklchState => Boolean(seed));
 
       // Second fetches: each seed returns another 9-color palette -> 3 pairs each
       const secondResults = await Promise.all(seeds.map((seed) => fetchPrediction(seed)));
 
-      const allPairs: GradientPair[] = [
-        ...buildPairs(firstPalette, firstHexPalette),
+      const allTriples: GradientTriple[] = [
+        ...buildTriples(firstPalette, firstHexPalette),
         ...secondResults.flatMap((result) =>
-          buildPairs(result.palette_oklch.map(arrToOklch), result.palette_hex)
+          buildTriples(
+            result.palette_oklch.map(arrToOklch),
+            result.palette_hex,
+          )
         ),
       ];
 
       // Flatten into the existing palette/hexPalette states used by UI rendering
-      setPalette(allPairs.flatMap((pair) => [pair.colorA, pair.colorB]));
-      setHexPalette(allPairs.flatMap((pair) => [pair.hexA, pair.hexB]));
+      setPalette(
+        allTriples.flatMap((triple) => [
+          triple.colorA,
+          triple.colorM,
+          triple.colorB,
+        ]),
+      );
+      setHexPalette(
+        allTriples.flatMap((triple) => [triple.hexA, triple.hexM, triple.hexB]),
+      );
 
       console.log("Prediction data fetched successfully");
     } catch (error) {
@@ -112,16 +132,18 @@ export function App() {
     }
   };
 
-  const gradientPairs = useMemo(() => {
-    const pairs: [number, number][] = [];
-    for (let i = 0; i < palette.length; i += 2) {
-      if (palette[i + 1]) pairs.push([i, i + 1]);
+  const gradientTriples = useMemo(() => {
+    const triples: [number, number, number][] = [];
+    for (let i = 0; i < palette.length; i += 3) {
+      if (palette[i + 1] && palette[i + 2]) {
+        triples.push([i, i + 1, i + 2]);
+      }
     }
-    return pairs;
+    return triples;
   }, [palette]);
 
-  const primaryPairs = gradientPairs.slice(0, 3);
-  const derivedPairs = gradientPairs.slice(3);
+  const primaryTriples = gradientTriples.slice(0, 3);
+  const derivedTriples = gradientTriples.slice(3);
 
   return (
     <div className={`duration-600 ${isDarkMode ? "bg-black" : ""}`}>
@@ -144,21 +166,25 @@ export function App() {
       />
 
       <div className="container-for-gradient-boxes">
-        {primaryPairs.map(([a, b], i) => {
+        {primaryTriples.map(([a, m, b], i) => {
           const colorA = palette[a];
+          const colorM = palette[m];
           const colorB = palette[b];
           const hexA = hexPalette[a];
+          const hexM = hexPalette[m];
           const hexB = hexPalette[b];
 
-          if (!colorA || !colorB) return null;
-          if (!hexA || !hexB) return null;
+          if (!colorA || !colorM || !colorB) return null;
+          if (!hexA || !hexM || !hexB) return null;
 
           return (
             <GradientBox
               key={i}
               colorA={colorA}
+              colorM={colorM}
               colorB={colorB}
               hexA={hexA}
+              hexM={hexM}
               hexB={hexB}
               isDarkMode={isDarkMode}
               isDefaultMode={isDefaultMode}
@@ -169,27 +195,31 @@ export function App() {
           );
         })}
       </div>
-      {derivedPairs.length > 0 && (
+      {derivedTriples.length > 0 && (
         <div className="mt-20 mb-4 text-center text-2xl md:text-3xl uppercase tracking-[0.2em] font-prosto-one text-default-gray">
           DERIVED COLOR
         </div>
       )}
       <div className="container-for-gradient-boxes pb-22">
-        {derivedPairs.map(([a, b], i) => {
+        {derivedTriples.map(([a, m, b], i) => {
           const colorA = palette[a];
+          const colorM = palette[m];
           const colorB = palette[b];
           const hexA = hexPalette[a];
+          const hexM = hexPalette[m];
           const hexB = hexPalette[b];
 
-          if (!colorA || !colorB) return null;
-          if (!hexA || !hexB) return null;
+          if (!colorA || !colorM || !colorB) return null;
+          if (!hexA || !hexM || !hexB) return null;
 
           return (
             <GradientBox
               key={`derived-${i}`}
               colorA={colorA}
+              colorM={colorM}
               colorB={colorB}
               hexA={hexA}
+              hexM={hexM}
               hexB={hexB}
               isDarkMode={isDarkMode}
               isDefaultMode={isDefaultMode}
