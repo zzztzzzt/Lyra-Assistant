@@ -72,6 +72,7 @@ const GradientBox: React.FC<Props> = ({
           <LyraAssistantIcon
             className="w-full h-full"
             gradientStart={accentA}
+            gradientMid={accentM}
             gradientEnd={accentB}
           />
         </div>

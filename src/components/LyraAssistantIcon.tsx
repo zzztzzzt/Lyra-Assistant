@@ -3,12 +3,19 @@ import { useId } from "react";
 interface IconProps {
   className?: string;
   gradientStart?: string;
+  gradientMid?: string;
   gradientEnd?: string;
 }
 
-export default function LyraAssistantIcon({ className, gradientStart, gradientEnd }: IconProps) {
+export default function LyraAssistantIcon({
+  className,
+  gradientStart,
+  gradientMid,
+  gradientEnd,
+}: IconProps) {
   const gradientId = useId();
-  const fillValue = gradientStart && gradientEnd ? `url(#${gradientId})` : "currentColor";
+  const fillValue =
+    gradientStart && gradientEnd ? `url(#${gradientId})` : "currentColor";
 
   return (
     <svg
@@ -24,6 +31,9 @@ export default function LyraAssistantIcon({ className, gradientStart, gradientEn
             x1="0%" y1="0%" x2="100%" y2="100%"
           >
             <stop offset="0%" stopColor={gradientStart} />
+            {gradientMid && (
+              <stop offset="50%" stopColor={gradientMid} />
+            )}
             <stop offset="100%" stopColor={gradientEnd} />
           </linearGradient>
         </defs>
