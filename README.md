@@ -14,9 +14,9 @@
 IMPORTANT : This project is still in the development and testing stages, licensing terms may be updated in the future. Please don't do any commercial usage currently.
 
 ## Project Dependencies Guide
-
-[![Django](https://img.shields.io/badge/Django-092E20?style=for-the-badge&logo=django&logoColor=white)](https://github.com/django/django)
-[![Django REST framework](https://img.shields.io/badge/Django_REST_framework-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://github.com/encode/django-rest-framework)
+[![LangChain](https://img.shields.io/badge/LangChain-1C3C3C?style=for-the-badge&logo=langchain&logoColor=white)](https://github.com/langchain-ai/langchain)
+[![Ollama](https://img.shields.io/badge/Ollama-000000?style=for-the-badge&logo=ollama&logoColor=white)](https://github.com/ollama/ollama)
+[![Django](https://img.shields.io/badge/Django-3776AB?style=for-the-badge&logo=django&logoColor=white)](https://github.com/django/django)
 [![React](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://github.com/facebook/react)
 [![Bun](https://img.shields.io/badge/Bun-000000?style=for-the-badge&logo=bun&logoColor=white)](https://github.com/oven-sh/bun)
 [![Tailwind CSS](https://img.shields.io/badge/tailwind_css-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://github.com/tailwindlabs/tailwindcss)
@@ -36,6 +36,24 @@ Lyra-Assistant uses React & Tailwind CSS for Frontend Design. And uses Bun as bu
 **( Dark Mode Support )**
 
 ![1.0showcase3](https://github.com/zzztzzzt/Lyra-Assistant/blob/main/showcase/Lyra_Assistant_1.0_showcase_3.webp)
+
+## Get Started
+
+**Install uv**
+
+upgrade : `python -m pip install --upgrade pip`
+
+use uv : `python -m pip install uv` & `python -m uv sync`
+
+**Database Migration**
+
+go into `assistantbackend` folder
+
+initialize DB : `python -m uv run python manage.py migrate`
+
+**Run Backend Server**
+
+`python -m uv run python manage.py runserver`
 
 ## Project Dependencies Details
 
