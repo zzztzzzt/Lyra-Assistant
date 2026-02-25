@@ -53,6 +53,8 @@ initialize DB : `python -m uv run python manage.py migrate`
 
 **Run Backend Server**
 
+go into `assistantbackend` folder
+
 `python -m uv run python manage.py runserver`
 
 ## Project Dependencies Details

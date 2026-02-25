@@ -1,0 +1,26 @@
+# Django
+
+# Python
+*.pyc
+__pycache__/
+*~$
+*.log
+*.pot
+
+# Virtual Environments
+.env
+.venv
+env/
+venv/
+ENV/
+
+# Lock File
+uv.lock
+
+# Databases
+db.sqlite3
+*.sqlite3-journal
+
+# OS Generated Files
+.DS_Store
+
