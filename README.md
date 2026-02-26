@@ -59,7 +59,7 @@ go into `assistantbackend` folder
 
 ## Project Detail / Debug
 
-1. Follow below to add new app to Django :
+**1. Follow below to add new app to Django :**
 
 `python -m uv run python manage.py startapp [YOURAPPNAME]`
 
