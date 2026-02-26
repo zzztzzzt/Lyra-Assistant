@@ -14,8 +14,13 @@
 IMPORTANT : This project is still in the development and testing stages, licensing terms may be updated in the future. Please don't do any commercial usage currently.
 
 ## Project Dependencies Guide
+
+[![Gemma3](https://img.shields.io/badge/Gemma3-4285F4?style=for-the-badge&logo=google&logoColor=white)](https://github.com/google-deepmind/gemma)
 [![LangChain](https://img.shields.io/badge/LangChain-1C3C3C?style=for-the-badge&logo=langchain&logoColor=white)](https://github.com/langchain-ai/langchain)
 [![Ollama](https://img.shields.io/badge/Ollama-000000?style=for-the-badge&logo=ollama&logoColor=white)](https://github.com/ollama/ollama)
+
+( APP )
+
 [![Django](https://img.shields.io/badge/Django-3776AB?style=for-the-badge&logo=django&logoColor=white)](https://github.com/django/django)
 [![React](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://github.com/facebook/react)
 [![Bun](https://img.shields.io/badge/Bun-000000?style=for-the-badge&logo=bun&logoColor=white)](https://github.com/oven-sh/bun)
@@ -39,7 +44,11 @@ Lyra-Assistant uses React & Tailwind CSS for Frontend Design. And uses Bun as bu
 
 ## Get Started
 
-### Step 1. Install Ollama
+### Step 1. Install Ollama & Gemma 3 1Bs
+
+Install Link : [https://ollama.com/download](https://ollama.com/download)
+
+on Ollama UI, choose `gemma3:1b` directly & random typing some words, it will auto-install `gemma3:1b` for you.
 
 ### Step 2. Setup Backend
 
@@ -65,7 +74,7 @@ go into `assistantbackend` folder
 
 ## Project Detail / Debug
 
-**1. Follow below to add new app to Django :**
+### 1. Follow below to add new app to Django :
 
 `python -m uv run python manage.py startapp [YOURAPPNAME]`
 
