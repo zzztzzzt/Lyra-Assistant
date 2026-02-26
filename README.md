@@ -39,7 +39,7 @@ Lyra-Assistant uses React & Tailwind CSS for Frontend Design. And uses Bun as bu
 
 ## Get Started
 
-**Install uv**
+**Build Dependencies ( Install uv )**
 
 upgrade : `python -m pip install --upgrade pip`
 
@@ -56,6 +56,36 @@ initialize DB : `python -m uv run python manage.py migrate`
 go into `assistantbackend` folder
 
 `python -m uv run python manage.py runserver`
+
+## Project Detail / Debug
+
+1. Follow below to add new app to Django :
+
+`python -m uv run python manage.py startapp [YOURAPPNAME]`
+
+create file : [YOURAPPNAME]/urls.py
+
+```python
+from django.urls import path
+
+from . import views
+
+urlpatterns = [
+    path("", views.index, name="index"),
+]
+```
+
+and add below to **assistantbackend/assistantbackend/urls.py** :
+
+```python
+from django.contrib import admin
+from django.urls import include, path
+
+urlpatterns = [
+    path("[YOURAPPNAME]/", include("[YOURAPPNAME].urls")),
+    path("admin/", admin.site.urls),
+]
+```
 
 ## Project Dependencies Details
 
