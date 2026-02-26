@@ -39,6 +39,10 @@ Lyra-Assistant uses React & Tailwind CSS for Frontend Design. And uses Bun as bu
 
 ## Get Started
 
+### Step 1. Install Ollama
+
+### Step 2. Setup Backend
+
 **Build Dependencies ( Install uv )**
 
 upgrade : `python -m pip install --upgrade pip`
@@ -56,6 +60,8 @@ initialize DB : `python -m uv run python manage.py migrate`
 go into `assistantbackend` folder
 
 `python -m uv run python manage.py runserver`
+
+### Step 3. Setup Frontend
 
 ## Project Detail / Debug
 
