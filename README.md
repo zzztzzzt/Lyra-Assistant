@@ -50,7 +50,7 @@ on Ollama UI, choose `gemma3:1b` directly & random typing some words, it will au
 
 ### Step 2. Fill `.env` file
 
-go into `assistantbackend` folder
+go into `Backend/assistantbackend` folder
 
 create file `.env` and configure your `.env` file according to the contents of `.env.example`
 
@@ -62,32 +62,62 @@ upgrade : `python -m pip install --upgrade pip`
 
 use uv : `python -m pip install uv` & `python -m uv sync`
 
+and add local package to project root, run below :
+
+`python -m uv pip install -e src/lyra_utils`
+
 **Database Migration**
 
-go into `assistantbackend` folder
+go into `Backend/assistantbackend` folder
 
 initialize DB : `python -m uv run python manage.py migrate`
 
 **Run Backend Server**
 
-go into `assistantbackend` folder
+go into `Backend/assistantbackend` folder
 
 `python -m uv run python manage.py runserver`
 
 ### Step 4. Setup Frontend
 
+## Convert `Lux.jl` Model Format to `Pytorch` Model Format
+
+put your `trained_color_model.jld2` into `models` folder
+
+back to project root
+
+run `python -m uv run python scripts/convert_lyra_jld2_to_pytorch.py models/trained_color_model.jld2 models/trained_color_model.pt`
+
+then your model will be saved to `models/trained_color_model.pt`
+
+run below to test prediction : `python -m uv run python scripts/lyra_torch_infer.py models/trained_color_model.pt --oklch 0.63 0.22 32.4`
+
 ## Project Detail / Debug
 
-### 1. Create Account for Django Admin :
+### Add new Custom Package :
 
-go into `assistantbackend` folder
+go into `src` folder
+
+run `python -m uv init --lib your_package`
+
+then go into the folder it create for you ( which cotain `pyproject.toml` )
+
+run `python -m uv add [package_you_need_in_your_custom_package]`
+
+and then keep going deeper to `./src/[your_package]/` & add your code there
+
+finally, go to `every place` needs your custom package & run `python -m uv pip install -e /path/to/project_root/src/your_package`
+
+### Create Account for Django Admin :
+
+go into `Backend/assistantbackend` folder
 
 run `python -m uv run python manage.py createsuperuser`
 you can leave blank at Email field
 
 in local test, open default `http://127.0.0.1:8000/admin/` & login
 
-### 2. Register Models to Django Admin :
+### Register Models to Django Admin :
 
 from [YOURAPPNAME]/admin.py
 
@@ -102,13 +132,13 @@ admin.site.register(YourModel)
 
 in local test, open default `http://127.0.0.1:8000/admin/` again
 
-### 3. Follow below to add new app to Django :
+### Add new App to Django :
 
-go into `assistantbackend` folder
+go into `Backend/assistantbackend` folder
 
 run `python -m uv run python manage.py startapp [YOURAPPNAME]`
 
-create file : [YOURAPPNAME]/urls.py
+create file : [YOURAPPNAME]/urls.py & add below :
 
 ```python
 from django.urls import path
@@ -122,7 +152,7 @@ urlpatterns = [
 
 create file : [YOURAPPNAME]/serializers.py ( for the content please see other apps' `serializers.py` )
 
-and add below to **assistantbackend/assistantbackend/urls.py** :
+and then add below to **assistantbackend/assistantbackend/urls.py** :
 
 ```python
 from django.contrib import admin

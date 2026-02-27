@@ -3,3 +3,25 @@
 
 # Finder (MacOS) folder config
 .DS_Store
+
+# Lyra Models
+/models/*
+!/models/Lyra1.6.pt
+!/models/Lyra2.0.pt
+
+# Python
+*.pyc
+__pycache__/
+*~$
+*.log
+*.pot
+
+# Virtual Environments
+.env
+.venv
+env/
+venv/
+ENV/
+
+# Lock File
+uv.lock

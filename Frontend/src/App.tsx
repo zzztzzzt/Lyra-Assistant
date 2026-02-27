@@ -56,7 +56,7 @@ export function App() {
 
   const fetchPrediction = async (color: OklchState): Promise<PredictResponse> => {
     const response = await fetch(
-      `http://localhost:8000/api/predict?oklch=${color.l},${color.c},${color.h}`
+      `http://localhost:8000/lyraassistant/predict?oklch=${color.l},${color.c},${color.h}`
     );
 
     if (!response.ok) {
