@@ -52,7 +52,8 @@ class ChatView(APIView):
             return Response(
                 {
                     "error": "Failed to call Ollama.",
-                    "detail": str(exc),
+                    # For Debug
+                    #"detail": str(exc),
                 },
                 status=status.HTTP_502_BAD_GATEWAY,
             )
