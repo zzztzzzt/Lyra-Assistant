@@ -16,8 +16,9 @@ IMPORTANT : This project is still in the development and testing stages, licensi
 
 ## Project Dependencies Guide
 
-[![Gemma3](https://img.shields.io/badge/Gemma3-4285F4?style=for-the-badge&logo=google&logoColor=white)](https://github.com/google-deepmind/gemma)
+[![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white)](https://github.com/pytorch/pytorch)
 [![LangChain](https://img.shields.io/badge/LangChain-1C3C3C?style=for-the-badge&logo=langchain&logoColor=white)](https://github.com/langchain-ai/langchain)
+[![Gemma3](https://img.shields.io/badge/Gemma3-4285F4?style=for-the-badge&logo=google&logoColor=white)](https://github.com/google-deepmind/gemma)
 [![Ollama](https://img.shields.io/badge/Ollama-000000?style=for-the-badge&logo=ollama&logoColor=white)](https://github.com/ollama/ollama)
 
 **( APP )**
