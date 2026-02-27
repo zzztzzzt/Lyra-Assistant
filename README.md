@@ -19,7 +19,7 @@ IMPORTANT : This project is still in the development and testing stages, licensi
 [![LangChain](https://img.shields.io/badge/LangChain-1C3C3C?style=for-the-badge&logo=langchain&logoColor=white)](https://github.com/langchain-ai/langchain)
 [![Ollama](https://img.shields.io/badge/Ollama-000000?style=for-the-badge&logo=ollama&logoColor=white)](https://github.com/ollama/ollama)
 
-( APP )
+**( APP )**
 
 [![Django](https://img.shields.io/badge/Django-3776AB?style=for-the-badge&logo=django&logoColor=white)](https://github.com/django/django)
 [![React](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://github.com/facebook/react)
@@ -44,13 +44,19 @@ Lyra-Assistant uses React & Tailwind CSS for Frontend Design. And uses Bun as bu
 
 ## Get Started
 
-### Step 1. Install Ollama & Gemma 3 1Bs
+### Step 1. Install Ollama & Gemma 3
 
 Install Link : [https://ollama.com/download](https://ollama.com/download)
 
 on Ollama UI, choose `gemma3:1b` directly & random typing some words, it will auto-install `gemma3:1b` for you.
 
-### Step 2. Setup Backend
+### Step 2. Fill `.env` file
+
+go into `assistantbackend` folder
+
+create file `.env` and configure your `.env` file according to the contents of `.env.example`
+
+### Step 3. Setup Backend
 
 **Build Dependencies ( Install uv )**
 
@@ -70,13 +76,15 @@ go into `assistantbackend` folder
 
 `python -m uv run python manage.py runserver`
 
-### Step 3. Setup Frontend
+### Step 4. Setup Frontend
 
 ## Project Detail / Debug
 
 ### 1. Follow below to add new app to Django :
 
-`python -m uv run python manage.py startapp [YOURAPPNAME]`
+go into `assistantbackend` folder
+
+run `python -m uv run python manage.py startapp [YOURAPPNAME]`
 
 create file : [YOURAPPNAME]/urls.py
 
@@ -99,6 +107,14 @@ from django.urls import include, path
 urlpatterns = [
     path("[YOURAPPNAME]/", include("[YOURAPPNAME].urls")),
     path("admin/", admin.site.urls),
+]
+```
+
+go into **assistantbackend/assistantbackend/settings.py** and add below
+
+```python
+INSTALLED_APPS = [
+    '[YOURAPPNAME]',
 ]
 ```
 
