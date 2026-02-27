@@ -77,7 +77,31 @@ go into `assistantbackend` folder
 
 ## Project Detail / Debug
 
-### 1. Follow below to add new app to Django :
+### 1. Create Account for Django Admin :
+
+go into `assistantbackend` folder
+
+run `python -m uv run python manage.py createsuperuser`
+you can leave blank at Email field
+
+in local test, open default `http://127.0.0.1:8000/admin/` & login
+
+### 2. Register Models to Django Admin :
+
+from [YOURAPPNAME]/admin.py
+
+```python
+from django.contrib import admin
+
+# Register your models here.
+from .models import YourModel
+
+admin.site.register(YourModel)
+```
+
+in local test, open default `http://127.0.0.1:8000/admin/` again
+
+### 3. Follow below to add new app to Django :
 
 go into `assistantbackend` folder
 
