@@ -98,6 +98,8 @@ urlpatterns = [
 ]
 ```
 
+create file : [YOURAPPNAME]/serializers.py ( for the content please see other apps' `serializers.py` )
+
 and add below to **assistantbackend/assistantbackend/urls.py** :
 
 ```python

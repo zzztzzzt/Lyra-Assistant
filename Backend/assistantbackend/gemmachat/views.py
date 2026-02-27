@@ -1,62 +1,68 @@
-import json
 import os
-
 import ollama
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_GET, require_http_methods
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+
+from .serializers import ChatSerializer
 
 
-def _get_ollama_client() -> ollama.Client:
+def get_ollama_client() -> ollama.Client:
     host = os.getenv("OLLAMA_HOST")
     return ollama.Client(host=host)
 
 
-@require_GET
-def health(request):
-    return JsonResponse(
-        {
-            "status": "ok",
-            "service": "gemmachat",
-            "default_model": os.getenv("OLLAMA_MODEL"),
-        }
-    )
-
-
-@csrf_exempt
-@require_http_methods(["POST"])
-def chat(request):
-    try:
-        payload = json.loads(request.body.decode("utf-8") or "{}")
-    except json.JSONDecodeError:
-        return JsonResponse({"error": "Invalid JSON payload."}, status=400)
-
-    message = payload.get("message", "")
-    if not isinstance(message, str) or not message.strip():
-        return JsonResponse({"error": "`message` must be a non-empty string."}, status=400)
-
-    model = payload.get("model") or os.getenv("OLLAMA_MODEL")
-
-    try:
-        response = _get_ollama_client().chat(
-            model=model,
-            messages=[{"role": "user", "content": message.strip()}],
-        )
-    except Exception as exc:
-        return JsonResponse(
+class HealthView(APIView):
+    def get(self, request):
+        return Response(
             {
-                "error": "Failed to call Ollama.",
-                "detail": str(exc),
-            },
-            status=502,
+                "status": "ok",
+                "service": "gemmachat",
+                "default_model": os.getenv("OLLAMA_MODEL"),
+            }
         )
 
-    reply = response.get("message", {}).get("content", "")
 
-    return JsonResponse(
-        {
-            "model": model,
-            "message": message.strip(),
-            "reply": reply,
-        }
-    )
+class ChatView(APIView):
+    def post(self, request):
+        serializer = ChatSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        message = serializer.validated_data["message"]
+        model = (
+            serializer.validated_data.get("model")
+            or os.getenv("OLLAMA_MODEL")
+        )
+
+        if not model:
+            return Response(
+                {"error": "Model is not configured."},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+
+        try:
+            response = get_ollama_client().chat(
+                model=model,
+                messages=[{"role": "user", "content": message}],
+                # Wait a maximum of 30 seconds
+                options={"timeout": 30},
+            )
+        except Exception as exc:
+            return Response(
+                {
+                    "error": "Failed to call Ollama.",
+                    "detail": str(exc),
+                },
+                status=status.HTTP_502_BAD_GATEWAY,
+            )
+
+        reply = response.get("message", {}).get("content", "")
+
+        return Response(
+            {
+                "model": model,
+                "message": message,
+                "reply": reply,
+            }
+        )
