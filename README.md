@@ -80,17 +80,25 @@ go into `Backend/assistantbackend` folder
 
 ### Step 4. Setup Frontend
 
-## Convert `Lux.jl` Model Format to `Pytorch` Model Format
+## Convert `Lux.jl` Model to `Pytorch` Model
 
 put your `trained_color_model.jld2` into `models` folder
 
 back to project root
 
-run `python -m uv run python scripts/convert_lyra_jld2_to_pytorch.py models/trained_color_model.jld2 models/trained_color_model.pt`
+run below :
+
+```shell
+python -m uv run python scripts/convert_lyra_jld2_to_pytorch.py models/trained_color_model.jld2 models/trained_color_model.pt
+```
 
 then your model will be saved to `models/trained_color_model.pt`
 
-run below to test prediction : `python -m uv run python scripts/lyra_torch_infer.py models/trained_color_model.pt --oklch 0.63 0.22 32.4`
+run below to test prediction :
+
+```shell
+python -m uv run python scripts/lyra_torch_infer.py models/trained_color_model.pt --oklch 0.63 0.22 32.4
+```
 
 ## Project Detail / Debug
 
