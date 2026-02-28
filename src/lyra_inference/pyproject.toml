@@ -1,18 +1,18 @@
 [project]
-name = "lyra-python-ver"
+name = "lyra-inference"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
+authors = [
+    { name = "zzztzzzt", email = "180073683+zzztzzzt@users.noreply.github.com" }
+]
 requires-python = ">=3.14"
 dependencies = [
-    "h5py>=3.15.1",
     "numpy>=2.4.2",
     "torch>=2.10.0",
     "torchvision>=0.25.0",
 ]
 
-[tool.uv.workspace]
-members = [
-    "src/lyra_utils",
-    "src/lyra_inference",
-]
+[build-system]
+requires = ["uv_build>=0.10.0,<0.11.0"]
+build-backend = "uv_build"

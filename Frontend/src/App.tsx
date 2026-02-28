@@ -21,7 +21,7 @@ interface PredictResponse {
 
 const arrToOklch = ([l, c, h]: [number, number, number]): OklchState => ({ l, c, h });
 
-const toStr = (col: OklchState) => `oklch(${(col.l * 100).toFixed(0)}% ${col.c.toFixed(3)} ${col.h})`;
+const toStr = (col: OklchState) => `oklch(${(col.l * 100).toFixed(0)}% ${col.c.toFixed(4)} ${col.h.toFixed(4)})`;
 
 type GradientTriple = {
   colorA: OklchState;
@@ -56,7 +56,10 @@ export function App() {
 
   const fetchPrediction = async (color: OklchState): Promise<PredictResponse> => {
     const response = await fetch(
-      `http://localhost:8000/lyraassistant/predict?oklch=${color.l},${color.c},${color.h}`
+      // Django Ver
+      `http://localhost:8000/lyraassistant/predict/?oklch=${color.l},${color.c},${color.h}`
+      // Genie Framework Ver
+      //`http://localhost:8000/api/predict?oklch=${color.l},${color.c},${color.h}`
     );
 
     if (!response.ok) {

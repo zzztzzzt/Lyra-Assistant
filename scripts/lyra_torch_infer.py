@@ -1,63 +1,13 @@
-from __future__ import annotations
-
 import argparse
 import random
 from pathlib import Path
 
 import numpy as np
-import torch
-import torch.nn as nn
+
+from lyra_inference.model import load_model
+from lyra_inference.inference import predict_palette_oklab
 
 from lyra_utils.color_oklab import oklab_to_hex, oklab_to_oklch_vec, oklch_to_oklab_vec
-
-
-class LyraTorchModel(nn.Module):
-    def __init__(self) -> None:
-        super().__init__()
-        self.fc1 = nn.Linear(3, 64, bias=True)
-        self.ln1 = nn.LayerNorm(64)
-        self.fc2 = nn.Linear(64, 64, bias=True)
-        self.fc3 = nn.Linear(64, 27, bias=True)
-
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        x = torch.relu(self.fc1(x))
-        x = self.ln1(x)
-        x = torch.relu(self.fc2(x))
-        x = self.fc3(x)
-        return x
-
-
-def load_model(pt_path: Path, device: str = "cpu") -> LyraTorchModel:
-    model = LyraTorchModel().to(device)
-    state = torch.load(pt_path, map_location=device)
-    model.load_state_dict(state, strict=True)
-    model.eval()
-    return model
-
-
-@torch.no_grad()
-def predict_palette_oklab(
-    model: LyraTorchModel,
-    main_oklab: np.ndarray,
-    boldness: float = 1.0,
-    device: str = "cpu",
-) -> np.ndarray:
-    # main_oklab shape: (3,) or (N,3)
-    arr = np.asarray(main_oklab, dtype=np.float32)
-    if arr.ndim == 1:
-        arr = arr.reshape(1, 3)
-    if arr.shape[1] != 3:
-        raise ValueError(f"Expected last dim=3, got {arr.shape}")
-
-    x = torch.from_numpy(arr).to(device)
-    y_offset = model(x)  # (N, 27)
-
-    # Align with Julia logic: y_pred = boldness * y_offset + repeat(main, 9)
-    main_repeat = x.repeat(1, 9)  # (N, 27)
-    y_pred = boldness * y_offset + main_repeat
-
-    # Return as (N, 9, 3)
-    return y_pred.reshape(-1, 9, 3).cpu().numpy()
 
 
 def main() -> None:

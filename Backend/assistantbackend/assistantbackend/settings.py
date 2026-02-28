@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     "rest_framework",
+    "corsheaders",
     'lyraassistant',
     'gemmachat',
 ]
@@ -49,11 +50,21 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "http://localhost:5174",
+    "http://localhost:3000",
+    "http://127.0.0.1:5173",
+    "http://127.0.0.1:5174",
+    "http://127.0.0.1:3000",
 ]
 
 ROOT_URLCONF = 'assistantbackend.urls'
@@ -124,3 +135,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Lyra color model paths. prefer custom, fallback to newest
+EXTERNAL_CUSTOM_AI_MODEL_PATH = os.getenv("EXTERNAL_CUSTOM_AI_MODEL_PATH", "")
+EXTERNAL_NEWEST_LYRA_MODEL_PATH = os.getenv("EXTERNAL_NEWEST_LYRA_MODEL_PATH", "")

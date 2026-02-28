@@ -62,10 +62,6 @@ upgrade : `python -m pip install --upgrade pip`
 
 use uv : `python -m pip install uv` & `python -m uv sync`
 
-and add local package to project root, run below :
-
-`python -m uv pip install -e src/lyra_utils`
-
 **Database Migration**
 
 go into `Backend/assistantbackend` folder
@@ -114,7 +110,7 @@ run `python -m uv add [package_you_need_in_your_custom_package]`
 
 and then keep going deeper to `./src/[your_package]/` & add your code there
 
-finally, go to `every place` needs your custom package & run `python -m uv pip install -e /path/to/project_root/src/your_package`
+finally, go to `every place except project_root` where needs your custom package & run `python -m uv add /path/to/project_root/src/your_package`
 
 ### Create Account for Django Admin :
 

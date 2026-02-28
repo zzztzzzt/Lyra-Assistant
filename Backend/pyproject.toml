@@ -6,7 +6,17 @@ readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
     "django>=6.0.2",
+    "django-cors-headers>=4.9.0",
     "djangorestframework>=3.16.1",
+    "lyra-inference",
+    "lyra-utils",
+    "numpy>=2.4.2",
     "ollama>=0.6.1",
     "python-dotenv>=1.2.1",
+    "torch>=2.10.0",
+    "torchvision>=0.25.0",
 ]
+
+[tool.uv.sources]
+lyra-utils = { path = "../src/lyra_utils" }
+lyra-inference = { path = "../src/lyra_inference" }
