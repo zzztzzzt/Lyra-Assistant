@@ -80,7 +80,7 @@ go into `Backend/assistantbackend` folder
 
 ### Step 4. Setup Frontend
 
-## Convert `Lux.jl` Model to `Pytorch` Model
+## Convert `Lux.jl` Model to `PyTorch` Model
 
 put your `trained_color_model.jld2` into `models` folder
 
