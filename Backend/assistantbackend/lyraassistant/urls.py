@@ -1,8 +1,8 @@
 from django.urls import path
 
-from . import views
+from .views import PredictAPIView
 
+app_name = "lyraassistant"
 urlpatterns = [
-    path("", views.index, name="index"),
-    path("predict/", views.predict, name="predict"),
+    path("predict/", PredictAPIView.as_view(), name="predict"),
 ]
