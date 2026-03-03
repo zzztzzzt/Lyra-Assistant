@@ -46,7 +46,7 @@ Lyra-Assistant uses React & Tailwind CSS for Frontend Design. And uses Bun as bu
 
 Install Link : [https://ollama.com/download](https://ollama.com/download)
 
-on Ollama UI, choose `gemma3:1b` directly & random typing some words, it will auto-install `gemma3:1b` for you.
+on Ollama UI, choose `gemma3:4b` directly & random typing some words, it will auto-install `gemma3:4b` for you.
 
 ### Step 2. Fill `.env` file
 

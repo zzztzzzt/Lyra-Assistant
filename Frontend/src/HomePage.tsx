@@ -143,7 +143,7 @@ export function HomePage() {
   const derivedTriples = gradientTriples.slice(3);
 
   return (
-    <div className={`duration-600 ${isDarkMode ? "bg-black" : ""}`}>
+    <div className={`min-h-screen duration-600 ${isDarkMode ? "bg-black" : ""}`}>
       {isModePanelOpen && (
         <ModePanel
           isModePanelOpen={isModePanelOpen}

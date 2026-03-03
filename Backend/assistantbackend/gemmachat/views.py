@@ -1,6 +1,7 @@
 import os
 import uuid
 import ollama
+from django.db.models import Max
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -117,5 +118,86 @@ class ChatView(APIView):
                 "conversation_id": conversation_id,
                 "message": message,
                 "reply": reply,
+            }
+        )
+
+
+class ConversationListView(APIView):
+    def get(self, request):
+        latest_by_conversation = (
+            ChatMessage.objects.values("conversation_id")
+            .annotate(latest_created_at=Max("created_at"))
+            .order_by("-latest_created_at")
+        )
+
+        summaries = []
+        for item in latest_by_conversation:
+            conversation_id = item["conversation_id"]
+            latest_message = (
+                ChatMessage.objects.filter(conversation_id=conversation_id)
+                .order_by("-created_at", "-id")
+                .first()
+            )
+            first_user_message = (
+                ChatMessage.objects.filter(
+                    conversation_id=conversation_id,
+                    role=ChatMessage.ROLE_USER,
+                )
+                .order_by("created_at", "id")
+                .first()
+            )
+            count = ChatMessage.objects.filter(
+                conversation_id=conversation_id
+            ).count()
+
+            summaries.append(
+                {
+                    "conversation_id": conversation_id,
+                    "title": (
+                        first_user_message.content[:64]
+                        if first_user_message
+                        else "Untitled chat"
+                    ),
+                    "preview": (
+                        latest_message.content[:80]
+                        if latest_message
+                        else ""
+                    ),
+                    "message_count": count,
+                    "updated_at": (
+                        latest_message.created_at.isoformat()
+                        if latest_message
+                        else None
+                    ),
+                }
+            )
+
+        return Response({"conversations": summaries})
+
+
+class ConversationDetailView(APIView):
+    def get(self, request, conversation_id: str):
+        history = ChatMessage.objects.filter(
+            conversation_id=conversation_id
+        ).order_by("created_at", "id")
+
+        if not history.exists():
+            return Response(
+                {"error": "Conversation not found."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        return Response(
+            {
+                "conversation_id": conversation_id,
+                "messages": [
+                    {
+                        "id": str(item.id),
+                        "role": item.role,
+                        "content": item.content,
+                        "created_at": item.created_at.isoformat(),
+                    }
+                    for item in history
+                ],
             }
         )
