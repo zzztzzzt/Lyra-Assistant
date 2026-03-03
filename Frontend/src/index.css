@@ -1,7 +1,9 @@
 @import "tailwindcss";
 
 @theme {
-    --font-prosto-one: "Prosto One", sans-serif;
+    --font-prosto-one: "Prosto One", "Kosugi Maru", "Qahiri", sans-serif;
+
+    --text-chat-lyra: 0.9375rem;
 
     --color-default-gray: #C3C3C3;
 
@@ -63,5 +65,33 @@
     .color-slider::-webkit-slider-thumb:active {
         transform: scale(1.4);
         cursor: grabbing;
+    }
+
+    @keyframes character-fade-in {
+        0% {
+            opacity: 0;
+            transform: translateY(4px);
+            filter: blur(2px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+            filter: blur(0);
+        }
+    }
+      
+    .animate-char {
+        display: inline-block;
+        animation: character-fade-in 0.3s ease forwards;
+    }
+
+    .mask-scrolling-faded {
+        background: linear-gradient(
+          to top,
+          rgba(255, 255, 255, 1) 0%,
+          rgba(255, 255, 255, 1) 80%,
+          rgba(255, 255, 255, 0.9) 90%,
+          rgba(255, 255, 255, 0) 100%
+        );
     }
 }

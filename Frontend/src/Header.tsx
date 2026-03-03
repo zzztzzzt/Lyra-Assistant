@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { OklchState } from "./App";
+import type { OklchState } from "./oklchTypes";
 import ColorController from "./components/ColorController";
 import GithubIcon from "./components/GitHubIcon";
 import LyraAssistantIcon from "./components/LyraAssistantIcon";
