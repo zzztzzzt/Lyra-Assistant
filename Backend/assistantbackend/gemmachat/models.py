@@ -15,6 +15,7 @@ class ChatMessage(models.Model):
     conversation_id = models.CharField(max_length=64, db_index=True)
     role = models.CharField(max_length=16, choices=ROLE_CHOICES)
     content = models.TextField()
+    is_system_call = models.BooleanField(default=False, db_index=True)
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
 
     class Meta:

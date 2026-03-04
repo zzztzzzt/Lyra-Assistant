@@ -23,11 +23,11 @@
 }
 
 @utility card-shape-header {
-    @apply max-h-50 aspect-golden rounded-lg;
+    @apply max-h-50 aspect-golden rounded-3xl rounded-tr-none rounded-bl-none;
 }
 
 @utility card-header {
-    @apply border-4 border-default-gray text-default-gray flex items-center cursor-pointer duration-600;
+    @apply border-5 border-default-gray text-default-gray flex items-center cursor-pointer duration-600;
 }
 
 @utility dark-card-hover {

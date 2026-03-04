@@ -1,6 +1,9 @@
 import { useState, useRef, useEffect, memo } from "react";
 import { Link } from "react-router-dom";
+
 import LyraAssistantIcon from "./components/LyraAssistantIcon";
+import CancelBtn from "./components/CancelBtn";
+import { llmGenTitle } from "./llm-fns/llmGenTitle";
 
 type ChatRole = "user" | "assistant";
 
@@ -62,10 +65,13 @@ export function ChatLyraPage() {
   const [conversations, setConversations] = useState<ConversationSummary[]>([]);
   const [input, setInput] = useState("");
   const [conversationId, setConversationId] = useState<string | null>(null);
+  const [pendingTitleConversationId, setPendingTitleConversationId] = useState<string | null>(null);
   const [isSending, setIsSending] = useState(false);
   const [isLoadingConversation, setIsLoadingConversation] = useState(false);
+  const [isDeletingConversation, setIsDeletingConversation] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const titleGeneratedConversationsRef = useRef<Set<string>>(new Set());
 
   const fetchConversations = async () => {
     try {
@@ -81,6 +87,7 @@ export function ChatLyraPage() {
 
   const loadConversation = async (targetConversationId: string) => {
     setIsLoadingConversation(true);
+    setPendingTitleConversationId(null);
     setError(null);
 
     try {
@@ -107,6 +114,35 @@ export function ChatLyraPage() {
     }
   };
 
+  const handleDeleteConversation = async (targetConversationId: string) => {
+    if (isDeletingConversation) return;
+
+    setIsDeletingConversation(targetConversationId);
+    setError(null);
+
+    try {
+      const response = await fetch(
+        `${GEMMA_CHAT_API_BASE}/conversations/${targetConversationId}/`,
+        { method: "DELETE" }
+      );
+      if (!response.ok) throw new Error("Failed to delete conversation");
+
+      setConversations((prev) =>
+        prev.filter((item) => item.conversation_id !== targetConversationId)
+      );
+
+      if (conversationId === targetConversationId) {
+        setConversationId(null);
+        setPendingTitleConversationId(null);
+        setMessages([]);
+      }
+    } catch {
+      setError("Delete conversation failed");
+    } finally {
+      setIsDeletingConversation(null);
+    }
+  };
+
   useEffect(() => {
     void fetchConversations();
   }, []);
@@ -120,6 +156,26 @@ export function ChatLyraPage() {
       });
     }
   }, [messages, isSending]);
+
+  // LLM generate Chat Title
+  useEffect(() => {
+    if (!conversationId || isLoadingConversation) return;
+    if (pendingTitleConversationId !== conversationId) return;
+    if (messages.length !== 4) return;
+    if (titleGeneratedConversationsRef.current.has(conversationId)) return;
+
+    titleGeneratedConversationsRef.current.add(conversationId);
+    const previousTalk = messages.map((msg) => msg.content);
+
+    void llmGenTitle(
+      `${GEMMA_CHAT_API_BASE}/chat/`,
+      conversationId,
+      previousTalk
+    ).catch(() => {
+      // Ignore title generation errors to keep chat flow stable.
+    });
+    setPendingTitleConversationId(null);
+  }, [conversationId, messages, isLoadingConversation, pendingTitleConversationId]);
 
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault();
@@ -151,6 +207,7 @@ export function ChatLyraPage() {
 
       const data = await response.json();
       setConversationId(data.conversation_id);
+      setPendingTitleConversationId(data.conversation_id ?? null);
 
       const assistantMessage: ChatMessage = {
         id: crypto.randomUUID(),
@@ -163,6 +220,7 @@ export function ChatLyraPage() {
       const currentModel = data.model;
 
       setCurrentLLM(currentModel);
+
       await fetchConversations();
     } catch (err) {
       setError("Connection failed");
@@ -179,22 +237,35 @@ export function ChatLyraPage() {
           <span>Current Model :&nbsp;</span>{ currentLLM }
         </div>
         {conversations.map((conversation) => (
-          <button
+          <div
             key={conversation.conversation_id}
-            type="button"
-            onClick={() => void loadConversation(conversation.conversation_id)}
-            disabled={isLoadingConversation}
-            className={`h-20 w-[calc(100%-2.5rem)] mx-5 mt-5 px-5 flex flex-col items-center justify-center text-center text-chat-lyra space-y-0.5 bg-white rounded-full rounded-bl-none duration-600 ${
-              conversationId === conversation.conversation_id
-                ? "ring ring-slate-400 shadow-md"
-                : ""
-            } ${isLoadingConversation ? "opacity-70" : "cursor-pointer"}`}
+            className="group relative h-20 w-[calc(100%-2.5rem)] mx-5 mt-5"
           >
-            <span className="w-full truncate">{conversation.title || "Untitled chat"}</span>
-            <span className="w-full truncate text-xs text-slate-500">
-              {conversation.preview || "No preview"}
-            </span>
-          </button>
+            <button
+              type="button"
+              onClick={() => void loadConversation(conversation.conversation_id)}
+              disabled={isLoadingConversation || Boolean(isDeletingConversation)}
+              className={`h-full w-full px-5 group-hover:pr-17 flex flex-col items-center justify-center text-center text-chat-lyra space-y-0.5 bg-white rounded-full rounded-bl-none duration-800 ${
+                conversationId === conversation.conversation_id
+                  ? "ring ring-slate-400 shadow-md"
+                  : ""
+              } ${isLoadingConversation || isDeletingConversation ? "opacity-70" : "cursor-pointer"}`}
+            >
+              <span className="w-full truncate">{conversation.title || "Untitled chat"}</span>
+              <span className="w-full truncate text-xs text-slate-500">
+                {conversation.preview || "No preview"}
+              </span>
+            </button>
+
+            <CancelBtn
+              cancelAction={() => void handleDeleteConversation(conversation.conversation_id)}
+              customClasses={`absolute top-1/2 right-2 -translate-y-1/2 scale-75 transition-all duration-600 ${
+                isDeletingConversation === conversation.conversation_id
+                  ? "opacity-60 pointer-events-none"
+                  : "opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto group-focus-within:opacity-100 group-focus-within:pointer-events-auto"
+              }`}
+            />
+          </div>
         ))}
       </div>
       <div className="h-screen w-3/4 font-prosto-one flex flex-col bg-white text-slate-900 overflow-hidden">

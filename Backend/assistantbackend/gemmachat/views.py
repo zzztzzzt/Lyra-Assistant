@@ -18,7 +18,10 @@ def get_ollama_client() -> ollama.Client:
 
 def get_recent_history(conversation_id: str, limit: int) -> list[dict]:
     history = (
-        ChatMessage.objects.filter(conversation_id=conversation_id)
+        ChatMessage.objects.filter(
+            conversation_id=conversation_id,
+            is_system_call=False,
+        )
         .order_by("-created_at", "-id")[:limit]
     )
     return [
@@ -62,6 +65,7 @@ class ChatView(APIView):
             serializer.validated_data.get("model")
             or os.getenv("OLLAMA_MODEL")
         )
+        is_system_call = serializer.validated_data.get("is_system_call", False)
         history_limit = int(os.getenv("CHAT_HISTORY_LIMIT", "12"))
         storage_limit = int(os.getenv("CHAT_STORAGE_LIMIT", "40"))
 
@@ -99,11 +103,13 @@ class ChatView(APIView):
                     conversation_id=conversation_id,
                     role=ChatMessage.ROLE_USER,
                     content=message,
+                    is_system_call=is_system_call,
                 ),
                 ChatMessage(
                     conversation_id=conversation_id,
                     role=ChatMessage.ROLE_ASSISTANT,
                     content=reply,
+                    is_system_call=is_system_call,
                 ),
             ]
         )
@@ -124,8 +130,9 @@ class ChatView(APIView):
 
 class ConversationListView(APIView):
     def get(self, request):
+        visible_messages = ChatMessage.objects.filter(is_system_call=False)
         latest_by_conversation = (
-            ChatMessage.objects.values("conversation_id")
+            visible_messages.values("conversation_id")
             .annotate(latest_created_at=Max("created_at"))
             .order_by("-latest_created_at")
         )
@@ -134,19 +141,28 @@ class ConversationListView(APIView):
         for item in latest_by_conversation:
             conversation_id = item["conversation_id"]
             latest_message = (
-                ChatMessage.objects.filter(conversation_id=conversation_id)
+                visible_messages.filter(conversation_id=conversation_id)
+                .order_by("-created_at", "-id")
+                .first()
+            )
+            generated_title_message = (
+                ChatMessage.objects.filter(
+                    conversation_id=conversation_id,
+                    role=ChatMessage.ROLE_ASSISTANT,
+                    is_system_call=True,
+                )
                 .order_by("-created_at", "-id")
                 .first()
             )
             first_user_message = (
-                ChatMessage.objects.filter(
+                visible_messages.filter(
                     conversation_id=conversation_id,
                     role=ChatMessage.ROLE_USER,
                 )
                 .order_by("created_at", "id")
                 .first()
             )
-            count = ChatMessage.objects.filter(
+            count = visible_messages.filter(
                 conversation_id=conversation_id
             ).count()
 
@@ -154,9 +170,14 @@ class ConversationListView(APIView):
                 {
                     "conversation_id": conversation_id,
                     "title": (
-                        first_user_message.content[:64]
-                        if first_user_message
-                        else "Untitled chat"
+                        generated_title_message.content.strip()[:64]
+                        if generated_title_message
+                        and generated_title_message.content.strip()
+                        else (
+                            first_user_message.content[:64]
+                            if first_user_message
+                            else "Untitled chat"
+                        )
                     ),
                     "preview": (
                         latest_message.content[:80]
@@ -178,7 +199,8 @@ class ConversationListView(APIView):
 class ConversationDetailView(APIView):
     def get(self, request, conversation_id: str):
         history = ChatMessage.objects.filter(
-            conversation_id=conversation_id
+            conversation_id=conversation_id,
+            is_system_call=False,
         ).order_by("created_at", "id")
 
         if not history.exists():
@@ -201,3 +223,16 @@ class ConversationDetailView(APIView):
                 ],
             }
         )
+
+    def delete(self, request, conversation_id: str):
+        deleted_count, _ = ChatMessage.objects.filter(
+            conversation_id=conversation_id
+        ).delete()
+
+        if deleted_count == 0:
+            return Response(
+                {"error": "Conversation not found."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
