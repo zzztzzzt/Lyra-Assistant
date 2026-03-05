@@ -1,6 +1,6 @@
 interface Props {
   cancelAction: () => void;
-  customClasses: string;
+  customClasses?: string;
 }
 
 const CancelBtn: React.FC<Props> = ({ cancelAction, customClasses }) => {

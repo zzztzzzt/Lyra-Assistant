@@ -1,11 +1,23 @@
 import { Link } from "react-router-dom";
 
 import LyraAssistantIcon from "@/components/LyraAssistantIcon";
+import RightArrowIcon from "@/components/RightArrowIcon";
 
-const ChatHeaderContent: React.FC = () => {
+interface Props {
+  onOpenSidebar: () => void;
+}
+
+const ChatHeaderContent: React.FC<Props> = ({ onOpenSidebar }) => {
   return (
     <>
       <div className="flex items-center gap-3">
+        <button
+          type="button"
+          onClick={onOpenSidebar}
+          className="lg:hidden inline-flex items-center justify-center w-10 h-10 text-slate-700"
+        >
+          <RightArrowIcon />
+        </button>
         <div className="hidden sm:block w-10 h-10">
           <LyraAssistantIcon className="w-full h-full" />
         </div>

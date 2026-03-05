@@ -72,6 +72,7 @@ export function ChatLyraPage() {
   const [isLoadingConversation, setIsLoadingConversation] = useState<boolean>(false);
   const [isDeletingConversation, setIsDeletingConversation] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState<boolean>(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const titleGeneratedConversationsRef = useRef<Set<string>>(new Set());
 
@@ -232,9 +233,13 @@ export function ChatLyraPage() {
   };
 
   return (
-    <div className="flex">
+    <div className="relative flex">
       {/* Side Bar */}
-      <div className="hidden lg:block h-screen w-1/4 bg-gradient-to-r from-white to-slate-50 font-lyra overflow-y-auto pb-6">
+      <div
+        className={`h-screen w-full lg:w-1/4 bg-gradient-to-r from-white to-slate-50 font-lyra overflow-y-auto pb-6 lg:block max-lg:absolute max-lg:top-0 max-lg:z-20 max-lg:duration-250 ${
+          isMobileSidebarOpen ? "max-lg:translate-x-0" : "max-lg:-translate-x-full"
+        }`}
+      >
         <ChatSideBarContent
           currentLLM={currentLLM}
           conversations={conversations}
@@ -243,12 +248,13 @@ export function ChatLyraPage() {
           isDeletingConversation={isDeletingConversation}
           handleDeleteConversation={handleDeleteConversation}
           conversationId={conversationId}
+          onCloseSidebar={() => setIsMobileSidebarOpen(false)}
         />
       </div>
       <div className="h-screen w-full lg:w-3/4 font-lyra flex flex-col bg-white text-slate-900 overflow-hidden">
         {/* Header */}
         <header className="flex items-center justify-between px-8 py-4 border-b border-slate-50">
-          <ChatHeaderContent />
+          <ChatHeaderContent onOpenSidebar={() => setIsMobileSidebarOpen(true)} />
         </header>
 
         {/* Message Display Area */}

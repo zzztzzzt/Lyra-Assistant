@@ -9,6 +9,7 @@ interface Props {
   isDeletingConversation: string | null;
   handleDeleteConversation: ( targetConversationId: string ) => Promise<void>;
   conversationId: string | null;
+  onCloseSidebar: () => void;
 }
 
 const ChatSideBarContent: React.FC<Props> = ({
@@ -18,10 +19,14 @@ const ChatSideBarContent: React.FC<Props> = ({
   isLoadingConversation,
   isDeletingConversation,
   handleDeleteConversation,
-  conversationId
+  conversationId,
+  onCloseSidebar
 }) => {
   return (
     <>
+      <div className="lg:hidden flex justify-end px-5 pt-5">
+        <CancelBtn cancelAction={onCloseSidebar}/>
+      </div>
       <div className="h-20 mx-5 mt-5 chat-side-bar-btn-style">
           <span className="hidden xl:block">Current Model :&nbsp;</span>{ currentLLM }
       </div>
@@ -32,7 +37,10 @@ const ChatSideBarContent: React.FC<Props> = ({
         >
           <button
             type="button"
-            onClick={() => void loadConversation(conversation.conversation_id)}
+            onClick={() => {
+              void loadConversation(conversation.conversation_id);
+              onCloseSidebar();
+            }}
             disabled={isLoadingConversation || Boolean(isDeletingConversation)}
             className={`h-full w-full px-5 group-hover:pr-17 chat-side-bar-btn-style flex-col space-y-0.5 duration-800 ${
               conversationId === conversation.conversation_id
