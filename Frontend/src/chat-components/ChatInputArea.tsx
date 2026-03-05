@@ -24,7 +24,7 @@ const ChatInputArea: React.FC<Props> = ({
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Ask Lyra anything ..."
-          className="flex-1 bg-transparent pl-5 pr-2 py-3 outline-none text-chat-lyra"
+          className="max-sm:w-full sm:flex-1 bg-transparent pl-5 pr-2 py-3 outline-none text-chat-lyra placeholder:invisible sm:placeholder:visible"
         />
         <button
           type="submit"

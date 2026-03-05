@@ -23,7 +23,7 @@ const ChatSideBarContent: React.FC<Props> = ({
   return (
     <>
       <div className="h-20 mx-5 mt-5 chat-side-bar-btn-style">
-          <span>Current Model :&nbsp;</span>{ currentLLM }
+          <span className="hidden xl:block">Current Model :&nbsp;</span>{ currentLLM }
       </div>
       {conversations.map((conversation) => (
         <div

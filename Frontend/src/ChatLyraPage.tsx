@@ -234,7 +234,7 @@ export function ChatLyraPage() {
   return (
     <div className="flex">
       {/* Side Bar */}
-      <div className="h-screen w-1/4 bg-gradient-to-r from-white to-slate-50 font-lyra overflow-y-auto pb-6">
+      <div className="hidden lg:block h-screen w-1/4 bg-gradient-to-r from-white to-slate-50 font-lyra overflow-y-auto pb-6">
         <ChatSideBarContent
           currentLLM={currentLLM}
           conversations={conversations}
@@ -245,7 +245,7 @@ export function ChatLyraPage() {
           conversationId={conversationId}
         />
       </div>
-      <div className="h-screen w-3/4 font-lyra flex flex-col bg-white text-slate-900 overflow-hidden">
+      <div className="h-screen w-full lg:w-3/4 font-lyra flex flex-col bg-white text-slate-900 overflow-hidden">
         {/* Header */}
         <header className="flex items-center justify-between px-8 py-4 border-b border-slate-50">
           <ChatHeaderContent />
@@ -264,7 +264,7 @@ export function ChatLyraPage() {
                   gradientEnd='oklch(0.9136 0.0808 339)'
                 />
                 </div>
-                <p className="mt-10 text-lg text-gray-300">Explore the place We've Never Been .</p>
+                <p className="mt-10 text-xs sm:text-lg text-gray-300">Explore the place We've Never Been .</p>
               </div>
             ) : (
               messages.map((msg, idx) => (
@@ -308,7 +308,7 @@ export function ChatLyraPage() {
         </main>
 
         {/* Input Area */}
-        <footer className="fixed bottom-0 right-0 w-3/4 mask-scrolling-faded pb-8 pt-8">
+        <footer className="fixed bottom-0 right-0 w-full lg:w-3/4 mask-scrolling-faded pb-8 pt-8">
           <ChatInputArea
             handleSubmit={handleSubmit}
             input={input}
