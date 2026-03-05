@@ -28,7 +28,7 @@ const ChatSideBarContent: React.FC<Props> = ({
         <CancelBtn cancelAction={onCloseSidebar}/>
       </div>
       <div className="h-20 mx-5 mt-5 chat-side-bar-btn-style">
-          <span className="hidden xl:block">Current Model :&nbsp;</span>{ currentLLM }
+        <span className="hidden xl:block">Current Model :&nbsp;</span>{ currentLLM }
       </div>
       {conversations.map((conversation) => (
         <div
@@ -42,7 +42,7 @@ const ChatSideBarContent: React.FC<Props> = ({
               onCloseSidebar();
             }}
             disabled={isLoadingConversation || Boolean(isDeletingConversation)}
-            className={`h-full w-full px-5 group-hover:pr-17 chat-side-bar-btn-style flex-col space-y-0.5 duration-800 ${
+            className={`h-full w-full pl-5 pr-17 lg:pr-5 group-hover:pr-17 chat-side-bar-btn-style flex-col space-y-0.5 duration-800 ${
               conversationId === conversation.conversation_id
                 ? "ring ring-slate-400 shadow-md"
                 : ""
@@ -59,7 +59,7 @@ const ChatSideBarContent: React.FC<Props> = ({
             customClasses={`absolute top-1/2 right-2 -translate-y-1/2 scale-75 transition-all duration-600 ${
               isDeletingConversation === conversation.conversation_id
                 ? "opacity-60 pointer-events-none"
-                : "opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto group-focus-within:opacity-100 group-focus-within:pointer-events-auto"
+                : "opacity-100 pointer-events-auto lg:opacity-0 lg:pointer-events-none lg:group-hover:opacity-100 lg:group-hover:pointer-events-auto lg:group-focus-within:opacity-100 lg:group-focus-within:pointer-events-auto"
             }`}
           />
         </div>
