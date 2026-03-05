@@ -8,6 +8,7 @@
 /models/*
 !/models/Lyra1.6.pt
 !/models/Lyra2.0.pt
+!/models/Lyra2.1.pt
 
 # Python
 *.pyc
