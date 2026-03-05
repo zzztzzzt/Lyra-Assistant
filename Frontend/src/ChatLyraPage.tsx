@@ -1,8 +1,10 @@
 import { useState, useRef, useEffect, memo } from "react";
-import { Link } from "react-router-dom";
+
+import ChatSideBarContent from "./chat-components/ChatSideBarContent";
+import ChatHeaderContent from "./chat-components/ChatHeaderContent";
+import ChatInputArea from "./chat-components/ChatInputArea";
 
 import LyraAssistantIcon from "./components/LyraAssistantIcon";
-import CancelBtn from "./components/CancelBtn";
 import { llmGenTitle } from "./llm-fns/llmGenTitle";
 
 type ChatRole = "user" | "assistant";
@@ -13,7 +15,7 @@ interface ChatMessage {
   content: string;
 }
 
-interface ConversationSummary {
+export interface ConversationSummary {
   conversation_id: string;
   title: string;
   preview: string;
@@ -63,11 +65,11 @@ export function ChatLyraPage() {
   const [currentLLM, setCurrentLLM] = useState<string>("detecting ...");
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [conversations, setConversations] = useState<ConversationSummary[]>([]);
-  const [input, setInput] = useState("");
+  const [input, setInput] = useState<string>("");
   const [conversationId, setConversationId] = useState<string | null>(null);
   const [pendingTitleConversationId, setPendingTitleConversationId] = useState<string | null>(null);
-  const [isSending, setIsSending] = useState(false);
-  const [isLoadingConversation, setIsLoadingConversation] = useState(false);
+  const [isSending, setIsSending] = useState<boolean>(false);
+  const [isLoadingConversation, setIsLoadingConversation] = useState<boolean>(false);
   const [isDeletingConversation, setIsDeletingConversation] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -233,59 +235,20 @@ export function ChatLyraPage() {
     <div className="flex">
       {/* Side Bar */}
       <div className="h-screen w-1/4 bg-gradient-to-r from-white to-slate-50 font-lyra overflow-y-auto pb-6">
-        <div className="h-20 mx-5 mt-5 chat-side-bar-btn-style">
-          <span>Current Model :&nbsp;</span>{ currentLLM }
-        </div>
-        {conversations.map((conversation) => (
-          <div
-            key={conversation.conversation_id}
-            className="group relative h-20 w-[calc(100%-2.5rem)] mx-5 mt-5"
-          >
-            <button
-              type="button"
-              onClick={() => void loadConversation(conversation.conversation_id)}
-              disabled={isLoadingConversation || Boolean(isDeletingConversation)}
-              className={`h-full w-full px-5 group-hover:pr-17 chat-side-bar-btn-style flex-col space-y-0.5 duration-800 ${
-                conversationId === conversation.conversation_id
-                  ? "ring ring-slate-400 shadow-md"
-                  : ""
-              } ${isLoadingConversation || isDeletingConversation ? "opacity-70" : "cursor-pointer"}`}
-            >
-              <span className="w-full truncate">{conversation.title || "Untitled chat"}</span>
-              <span className="w-full truncate text-xs text-slate-500">
-                {conversation.preview || "No preview"}
-              </span>
-            </button>
-
-            <CancelBtn
-              cancelAction={() => void handleDeleteConversation(conversation.conversation_id)}
-              customClasses={`absolute top-1/2 right-2 -translate-y-1/2 scale-75 transition-all duration-600 ${
-                isDeletingConversation === conversation.conversation_id
-                  ? "opacity-60 pointer-events-none"
-                  : "opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto group-focus-within:opacity-100 group-focus-within:pointer-events-auto"
-              }`}
-            />
-          </div>
-        ))}
+        <ChatSideBarContent
+          currentLLM={currentLLM}
+          conversations={conversations}
+          loadConversation={loadConversation}
+          isLoadingConversation={isLoadingConversation}
+          isDeletingConversation={isDeletingConversation}
+          handleDeleteConversation={handleDeleteConversation}
+          conversationId={conversationId}
+        />
       </div>
       <div className="h-screen w-3/4 font-lyra flex flex-col bg-white text-slate-900 overflow-hidden">
         {/* Header */}
         <header className="flex items-center justify-between px-8 py-4 border-b border-slate-50">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10">
-              <LyraAssistantIcon className="w-full h-full" />
-            </div>
-            <span className="font-semibold text-lg text-slate-700">Lyra 2 + Gemma 3</span>
-          </div>
-          <Link 
-            to="/"
-            className="flex font-semibold text-lg text-slate-700 hover:text-slate-500 duration-400 cursor-pointer"
-          >
-            Home &nbsp;
-            <svg fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
-              <path strokeLinecap="round" strokeLinejoin="round" d="m15 15 6-6m0 0-6-6m6 6H9a6 6 0 0 0 0 12h3" />
-            </svg>
-          </Link>
+          <ChatHeaderContent />
         </header>
 
         {/* Message Display Area */}
@@ -346,30 +309,13 @@ export function ChatLyraPage() {
 
         {/* Input Area */}
         <footer className="fixed bottom-0 right-0 w-3/4 mask-scrolling-faded pb-8 pt-8">
-          <div className="max-w-210 mx-auto px-6">
-            <form
-              onSubmit={handleSubmit}
-              className="flex items-center gap-2 bg-white border border-slate-200 rounded-full py-1.5 px-2.5 focus-within:border-slate-400 transition-all"
-            >
-              <input
-                type="text"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder="Ask Lyra anything ..."
-                className="flex-1 bg-transparent pl-5 pr-2 py-3 outline-none text-chat-lyra"
-              />
-              <button
-                type="submit"
-                disabled={!input.trim() || isSending}
-                className="bg-slate-900 text-white p-3 rounded-full disabled:bg-slate-100 disabled:text-slate-300 transition-all hover:scale-105 active:scale-95"
-              >
-                <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5" stroke="currentColor" strokeWidth="3">
-                  <path d="M12 19V5M5 12l7-7 7 7" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </button>
-            </form>
-            {error && <p className="text-xs text-red-500 mt-2 text-center">{error}</p>}
-          </div>
+          <ChatInputArea
+            handleSubmit={handleSubmit}
+            input={input}
+            setInput={setInput}
+            isSending={isSending}
+            error={error}
+          />
         </footer>
       </div>
     </div>
