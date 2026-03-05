@@ -27,7 +27,7 @@ const Header: React.FC<Props> = ({
 
   return(
     <div>
-      <div className="flex flex-col md:flex-row items-center justify-center max-md:space-y-3 md:gap-3 xl:gap-5 py-8 md:py-12 xl:py-14 text-2xl xl:text-4xl text-default-gray font-prosto-one">
+      <div className="flex flex-col md:flex-row items-center justify-center max-md:space-y-3 md:gap-3 xl:gap-5 py-8 md:py-12 xl:py-14 text-2xl xl:text-4xl text-default-gray font-lyra">
         <div className="decorative-line" style={{ backgroundImage: `linear-gradient(270deg in oklch, ${accentM}, ${ isDarkMode? "black" : "white" })` }}></div>
         
         <div>
@@ -70,7 +70,7 @@ const Header: React.FC<Props> = ({
       <div className="xl:max-w-320 xl:mx-auto xl:flex xl:flex-row xl:justify-between xl:items-center">
         <div className="mx-auto h-50 w-full max-w-120 grid grid-cols-3 px-6 gap-6">
           <div
-            className={`card-shape-header card-header px-4 justify-center font-prosto-one text-2xl ${ isDarkMode? "dark-card-hover" : "light-card-hover" }`}
+            className={`card-shape-header card-header px-4 justify-center font-lyra text-2xl ${ isDarkMode? "dark-card-hover" : "light-card-hover" }`}
             style={{ boxShadow: `0 0 10px 3px oklch(from ${ accentM } l c h / 0.5)` }}
             onClick={() => setisModePanelOpen(true)}
           >
@@ -93,7 +93,7 @@ const Header: React.FC<Props> = ({
 
         <div className="mx-auto h-50 w-full max-w-120 grid grid-cols-3 px-6 gap-6">
           <div
-            className={`card-shape-header card-header px-4 justify-center font-prosto-one text-white text-4xl bg-default-gray
+            className={`card-shape-header card-header px-4 justify-center font-lyra text-white text-4xl bg-default-gray
               ${ isDarkMode? "dark-card-hover hover:bg-black" : "light-card-hover hover:bg-white" }
             `}
             style={{ boxShadow: `0 0 10px 3px oklch(from ${ accentM } l c h / 0.5)` }}
@@ -122,7 +122,7 @@ const Header: React.FC<Props> = ({
             </div>
           </div>
           <div
-            className={`card-shape-header card-header px-4 justify-center font-prosto-one text-2xl ${ isDarkMode? "dark-card-hover" : "light-card-hover" }`}
+            className={`card-shape-header card-header px-4 justify-center font-lyra text-2xl ${ isDarkMode? "dark-card-hover" : "light-card-hover" }`}
             style={{ boxShadow: `0 0 10px 3px oklch(from ${ accentM } l c h / 0.5)` }}
           >
             Tools

@@ -195,7 +195,7 @@ export function HomePage() {
         })}
       </div>
       {derivedTriples.length > 0 && (
-        <div className="mt-20 mb-4 text-center text-2xl md:text-3xl uppercase tracking-[0.2em] font-prosto-one text-default-gray">
+        <div className="mt-20 mb-4 text-center text-2xl md:text-3xl uppercase tracking-[0.2em] font-lyra text-default-gray">
           DERIVED COLOR
         </div>
       )}

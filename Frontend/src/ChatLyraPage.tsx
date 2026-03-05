@@ -232,8 +232,8 @@ export function ChatLyraPage() {
   return (
     <div className="flex">
       {/* Side Bar */}
-      <div className="h-screen w-1/4 bg-gradient-to-r from-white to-slate-50 font-prosto-one overflow-y-auto pb-6">
-        <div className="h-20 mx-5 mt-5 flex items-center justify-center text-center text-chat-lyra bg-white rounded-full rounded-bl-none">
+      <div className="h-screen w-1/4 bg-gradient-to-r from-white to-slate-50 font-lyra overflow-y-auto pb-6">
+        <div className="h-20 mx-5 mt-5 chat-side-bar-btn-style">
           <span>Current Model :&nbsp;</span>{ currentLLM }
         </div>
         {conversations.map((conversation) => (
@@ -245,7 +245,7 @@ export function ChatLyraPage() {
               type="button"
               onClick={() => void loadConversation(conversation.conversation_id)}
               disabled={isLoadingConversation || Boolean(isDeletingConversation)}
-              className={`h-full w-full px-5 group-hover:pr-17 flex flex-col items-center justify-center text-center text-chat-lyra space-y-0.5 bg-white rounded-full rounded-bl-none duration-800 ${
+              className={`h-full w-full px-5 group-hover:pr-17 chat-side-bar-btn-style flex-col space-y-0.5 duration-800 ${
                 conversationId === conversation.conversation_id
                   ? "ring ring-slate-400 shadow-md"
                   : ""
@@ -268,7 +268,7 @@ export function ChatLyraPage() {
           </div>
         ))}
       </div>
-      <div className="h-screen w-3/4 font-prosto-one flex flex-col bg-white text-slate-900 overflow-hidden">
+      <div className="h-screen w-3/4 font-lyra flex flex-col bg-white text-slate-900 overflow-hidden">
         {/* Header */}
         <header className="flex items-center justify-between px-8 py-4 border-b border-slate-50">
           <div className="flex items-center gap-3">
@@ -335,9 +335,9 @@ export function ChatLyraPage() {
                   <LyraAssistantIcon />
                 </div>
                 <div className="flex gap-1">
-                  <span className="w-1.5 h-1.5 bg-slate-300 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
-                  <span className="w-1.5 h-1.5 bg-slate-300 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
-                  <span className="w-1.5 h-1.5 bg-slate-300 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
+                  <span className="reply-loading-dot" style={{ animationDelay: '0ms' }}></span>
+                  <span className="reply-loading-dot" style={{ animationDelay: '150ms' }}></span>
+                  <span className="reply-loading-dot" style={{ animationDelay: '300ms' }}></span>
                 </div>
               </div>
             )}

@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-    --font-prosto-one: "Prosto One", "Kosugi Maru", "Qahiri", sans-serif;
+    --font-lyra: "Prosto One", "Kosugi Maru", "Qahiri", sans-serif;
 
     --text-chat-lyra: 0.9375rem;
 
@@ -48,6 +48,14 @@
 
 @utility mode-panel-btn {
     @apply w-full h-30 bg-white hover:bg-black text-lg md:text-2xl hover:text-white rounded-mode-panel flex justify-center items-center text-center shadow-md cursor-pointer duration-600;
+}
+
+@utility chat-side-bar-btn-style {
+    @apply flex items-center justify-center text-center text-chat-lyra bg-white rounded-full rounded-bl-none;
+}
+
+@utility reply-loading-dot {
+    @apply w-1.5 h-1.5 bg-slate-300 rounded-full animate-bounce;
 }
 
 @layer base {

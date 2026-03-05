@@ -52,7 +52,7 @@ const ModePanel: React.FC<Props> = ({
           ${mounted ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-95 translate-y-3"}
         `}
       >
-        <div className="relative h-full w-full pt-30 px-8 bg-white/70 shadow-mode-panel rounded-mode-panel font-prosto-one">
+        <div className="relative h-full w-full pt-30 px-8 bg-white/70 shadow-mode-panel rounded-mode-panel font-lyra">
           <CancelBtn
             cancelAction={() => setisModePanelOpen(false)}
             customClasses="absolute top-8 right-8"

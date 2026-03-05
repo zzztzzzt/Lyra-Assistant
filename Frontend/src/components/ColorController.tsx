@@ -33,7 +33,7 @@ const ColorController: React.FC<ControllerProps> = ({ color, setColor }) => {
   }, [color.l, color.c]);
 
   return (
-    <div className="font-prosto-one w-full space-y-6">
+    <div className="font-lyra w-full space-y-6">
       <div className="">
         <div className="h-10 xl:h-10.5 rounded-lg relative overflow-hidden bg-gray-200/80">
           

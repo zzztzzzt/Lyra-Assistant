@@ -35,7 +35,7 @@ const GradientBox: React.FC<Props> = ({
 
   return (
     <div
-      className="relative flex flex-col items-center h-140 xl:h-130 mx-6 mt-16 rounded-gradient-card text-default-gray font-prosto-one"
+      className="relative flex flex-col items-center h-140 xl:h-130 mx-6 mt-16 rounded-gradient-card text-default-gray font-lyra"
       style={{
         boxShadow: `3px 3px 0 7px oklch(from ${accentM} l c h / 0.5)`,
       }}
