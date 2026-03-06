@@ -98,6 +98,16 @@ python -m uv run python scripts/lyra_torch_infer.py models/trained_color_model.p
 
 if you change `Activation Function` in your new Model, you need to also change this file : `\src\lyra_inference\src\lyra_inference\model.py`
 
+if there are Errors during conversion, use below command to debug
+
+```shell
+python -m uv run python scripts/model_conversion_debug/inspect_lyra_pt.py models/trained_color_model.pt
+```
+also check original JLD2 model
+```shell
+python -m uv run python scripts/model_conversion_debug/inspect_lyra_jld2.py models/trained_color_model.jld2
+```
+
 ## Project Detail / Debug
 
 ### Add new Custom Package :
