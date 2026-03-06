@@ -96,6 +96,8 @@ run below to test prediction :
 python -m uv run python scripts/lyra_torch_infer.py models/trained_color_model.pt --oklch 0.63 0.22 32.4
 ```
 
+if you change `Activation Function` in your new Model, you need to also change this file : `\src\lyra_inference\src\lyra_inference\model.py`
+
 ## Project Detail / Debug
 
 ### Add new Custom Package :
@@ -110,7 +112,8 @@ run `python -m uv add [package_you_need_in_your_custom_package]`
 
 and then keep going deeper to `./src/[your_package]/` & add your code there
 
-finally, go to `every place except project_root` where needs your custom package & run `python -m uv add /path/to/project_root/src/your_package`
+finally, go to `every place except project_root` where needs your custom package & run `python -m uv add --editable /path/to/project_root/src/your_package`
+( please note that on production environment you may need to disable `--editable` )
 
 ### Create Account for Django Admin :
 

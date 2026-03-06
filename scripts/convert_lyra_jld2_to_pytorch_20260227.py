@@ -1,5 +1,5 @@
 """
-VERSION : Lyra 2.1 to Current
+VERSION : Lyra 1.0 to Lyra 2.0
 Convert Lyra Lux/JLD2 model to PyTorch state_dict.
 
 This converter is intentionally scoped to Lyra models trained by:
@@ -28,9 +28,9 @@ class LyraTorchModel(nn.Module):
         self.fc3 = nn.Linear(64, 27, bias=True)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        x = torch.nn.functional.mish(self.fc1(x))
+        x = torch.relu(self.fc1(x))
         x = self.ln1(x)
-        x = torch.nn.functional.mish(self.fc2(x))
+        x = torch.relu(self.fc2(x))
         x = self.fc3(x)
         return x
 
@@ -74,23 +74,17 @@ def _resolve_node(node: Any, f: h5py.File) -> Any:
 
 
 def _read_tstate_parameters(f: h5py.File) -> Any:
-    tstate = f["tstate"]
+    tstate = _resolve_node(f["tstate"], f)
 
-    # 2.1+ : tstate is a scalar Dataset containing a numpy.void structured scalar
-    if isinstance(tstate, h5py.Dataset) and tstate.shape == ():
-        val = tstate[()]
-        if isinstance(val, np.void) and "parameters" in (val.dtype.names or ()):
-            return val["parameters"]  # returns np.void, fields are object refs
-        # fallback: try resolving as before
-        tstate = _resolve_node(tstate, f)
-
+    # Case A: tstate is a Group and parameters is a child node.
     if isinstance(tstate, h5py.Group):
         return _resolve_node(tstate["parameters"], f)
 
+    # Case B: tstate is np.void structured scalar.
     if isinstance(tstate, np.void):
         if "parameters" not in (tstate.dtype.names or ()):
             raise ValueError(f"tstate has no 'parameters' field. fields={tstate.dtype.names}")
-        return tstate["parameters"]
+        return _resolve_node(tstate["parameters"], f)
 
     raise TypeError(f"Unsupported tstate node type: {type(tstate)}")
 
@@ -138,14 +132,16 @@ def _to_1d(arr: np.ndarray, name: str) -> np.ndarray:
 
 
 def _read_lyra_weights_from_jld2(jld2_path: Path) -> Dict[str, np.ndarray]:
+    """
+    Parse known Lyra/Lux parameter layout from JLD2.
+    """
     with h5py.File(jld2_path, "r") as f:
+        # Lyra-specific parse for Lux.Training.TrainState serialization variants.
         root = _read_tstate_parameters(f)
-
-        # In 2.1, root is np.void; each layer field is also np.void with 'O' (object ref) leaves
-        layer_1 = _resolve_node(_get_field(root, "layer_1"), f)
-        layer_2 = _resolve_node(_get_field(root, "layer_2"), f)
-        layer_3 = _resolve_node(_get_field(root, "layer_3"), f)
-        layer_4 = _resolve_node(_get_field(root, "layer_4"), f)
+        layer_1 = _get_field(root, "layer_1")
+        layer_2 = _get_field(root, "layer_2")
+        layer_3 = _get_field(root, "layer_3")
+        layer_4 = _get_field(root, "layer_4")
 
         ln_w = _read_field(layer_2, ("weight", "gamma", "scale"), "layer_2", f)
         ln_b = _read_field(layer_2, ("bias", "beta", "shift"), "layer_2", f)
@@ -163,15 +159,21 @@ def _read_lyra_weights_from_jld2(jld2_path: Path) -> Dict[str, np.ndarray]:
 
 
 def _to_torch_state_dict(lyra_weights: Dict[str, np.ndarray]) -> Dict[str, torch.Tensor]:
-    # In Lyra 2.1, all Dense weights are serialized as (in, out).
-    # PyTorch Linear expects (out, in), so always transpose.
-    transpose_keys = {"fc1.weight", "fc2.weight", "fc3.weight"}
+    # Some Lyra checkpoints serialize Dense weights as (out, in), others as (in, out).
+    # Normalize to PyTorch Linear layout: (out, in).
+    expected_w = {
+        "fc1.weight": (64, 3),
+        "fc2.weight": (64, 64),
+        "fc3.weight": (27, 64),
+    }
 
     state: Dict[str, torch.Tensor] = {}
     for k, v in lyra_weights.items():
         arr = v.astype(np.float32)
-        if k in transpose_keys:
-            arr = arr.T
+        if k in expected_w:
+            exp = expected_w[k]
+            if arr.shape == (exp[1], exp[0]):
+                arr = arr.T
         state[k] = torch.from_numpy(arr)
     return state
 
@@ -195,11 +197,6 @@ def _verify_shapes(state: Dict[str, torch.Tensor]) -> None:
 
 def convert(jld2_path: Path, out_pt: Path, out_meta: Path | None) -> Tuple[Path, Path | None]:
     lyra_weights = _read_lyra_weights_from_jld2(jld2_path)
-
-    # For Debug
-    for k, v in lyra_weights.items():
-        print(f"{k}: shape={v.shape}")
-
     state = _to_torch_state_dict(lyra_weights)
     _verify_shapes(state)
 

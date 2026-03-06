@@ -27,7 +27,7 @@
 }
 
 @utility card-header {
-    @apply border-5 border-default-gray text-default-gray flex items-center cursor-pointer duration-600;
+    @apply border-4 border-default-gray text-default-gray flex items-center cursor-pointer duration-600;
 }
 
 @utility dark-card-hover {

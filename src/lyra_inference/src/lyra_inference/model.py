@@ -11,10 +11,25 @@ class LyraTorchModel(nn.Module):
         self.fc2 = nn.Linear(64, 64, bias=True)
         self.fc3 = nn.Linear(64, 27, bias=True)
 
+    """
+    VERSION : Lyra 1.0 to Lyra 2.0
+    """
+    """
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         x = torch.relu(self.fc1(x))
         x = self.ln1(x)
         x = torch.relu(self.fc2(x))
+        x = self.fc3(x)
+        return x
+    """
+
+    """
+    VERSION : Lyra 2.1 to Current
+    """
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        x = torch.nn.functional.mish(self.fc1(x))
+        x = self.ln1(x)
+        x = torch.nn.functional.mish(self.fc2(x))
         x = self.fc3(x)
         return x
 

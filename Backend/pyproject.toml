@@ -18,5 +18,5 @@ dependencies = [
 ]
 
 [tool.uv.sources]
-lyra-utils = { path = "../src/lyra_utils" }
-lyra-inference = { path = "../src/lyra_inference" }
+lyra-utils = { path = "../src/lyra_utils", editable = true }
+lyra-inference = { path = "../src/lyra_inference", editable = true }
