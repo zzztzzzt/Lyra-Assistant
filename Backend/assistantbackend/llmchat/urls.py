@@ -7,7 +7,7 @@ from .views import (
     ConversationDetailView,
 )
 
-app_name = "gemmachat"
+app_name = "llmchat"
 urlpatterns = [
     path("health/", HealthView.as_view(), name="health"),
     path("chat/", ChatView.as_view(), name="chat"),

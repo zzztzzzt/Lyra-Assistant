@@ -23,7 +23,7 @@ export interface ConversationSummary {
   updated_at: string | null;
 }
 
-const GEMMA_CHAT_API_BASE = "http://localhost:8000/gemmachat";
+const GEMMA_CHAT_API_BASE = "http://localhost:8000/llmchat";
 
 // Handles smooth typing effects
 const TypewriterMessage = memo(({ content }: { content: string }) => {

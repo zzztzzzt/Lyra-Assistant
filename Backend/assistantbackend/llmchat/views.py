@@ -45,7 +45,7 @@ class HealthView(APIView):
         return Response(
             {
                 "status": "ok",
-                "service": "gemmachat",
+                "service": "llmchat",
                 "default_model": os.getenv("OLLAMA_MODEL"),
             }
         )

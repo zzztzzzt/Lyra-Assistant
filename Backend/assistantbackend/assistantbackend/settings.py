@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "corsheaders",
     'lyraassistant',
-    'gemmachat',
+    'llmchat',
 ]
 
 MIDDLEWARE = [
