@@ -6,7 +6,7 @@ readme = "README.md"
 authors = [
     { name = "zzztzzzt", email = "180073683+zzztzzzt@users.noreply.github.com" }
 ]
-requires-python = ">=3.14"
+requires-python = ">=3.12"
 dependencies = [
     "numpy>=2.4.2",
     "torch>=2.10.0",

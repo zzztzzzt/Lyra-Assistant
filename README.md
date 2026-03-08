@@ -18,7 +18,7 @@ IMPORTANT : This project is still in the development and testing stages, licensi
 
 [![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white)](https://github.com/pytorch/pytorch)
 [![LangChain](https://img.shields.io/badge/LangChain-1C3C3C?style=for-the-badge&logo=langchain&logoColor=white)](https://github.com/langchain-ai/langchain)
-[![Gemma3](https://img.shields.io/badge/Gemma3-4285F4?style=for-the-badge&logo=google&logoColor=white)](https://github.com/google-deepmind/gemma)
+[![Llama3.1](https://img.shields.io/badge/Llama3.1-0467DF?style=for-the-badge&logo=meta&logoColor=white)](https://github.com/meta-llama/llama)
 [![Ollama](https://img.shields.io/badge/Ollama-000000?style=for-the-badge&logo=ollama&logoColor=white)](https://github.com/ollama/ollama)
 
 **( APP )**
@@ -42,11 +42,11 @@ Lyra-Assistant uses React & Tailwind CSS for Frontend Design. And uses Bun as bu
 
 ## Get Started
 
-### Step 1. Install Ollama & Gemma 3
+### Step 1. Install Ollama & Llama 3.1
 
 Install Link : [https://ollama.com/download](https://ollama.com/download)
 
-on Ollama UI, choose `gemma3:4b` directly & random typing some words, it will auto-install `gemma3:4b` for you.
+on CMD, run `ollama pull llama3.1:8b`, it will install `llama3.1:8b` for you.
 
 ### Step 2. Fill `.env` file
 
@@ -109,6 +109,14 @@ python -m uv run python scripts/model_conversion_debug/inspect_lyra_jld2.py mode
 ```
 
 ## Project Detail / Debug
+
+### Upgrade / Downgrade Python Version : 
+
+run `python -m uv python install 3.xx`
+
+and
+
+`python -m uv python pin 3.xx`
 
 ### Add new Custom Package :
 

@@ -1,6 +1,9 @@
 import os
+import re
 import uuid
 import ollama
+from langchain_ollama import ChatOllama
+from langchain_core.messages import HumanMessage, AIMessage, ToolMessage, SystemMessage
 from django.db.models import Max
 
 from rest_framework.views import APIView
@@ -9,6 +12,8 @@ from rest_framework import status
 
 from .models import ChatMessage
 from .serializers import ChatSerializer
+
+from .tools import predict_color_palette
 
 
 def get_ollama_client() -> ollama.Client:
@@ -38,6 +43,24 @@ def prune_conversation(conversation_id: str, keep_limit: int) -> None:
     )
     if old_ids:
         ChatMessage.objects.filter(id__in=old_ids).delete()
+
+
+def normalize_ai_content(content) -> str:
+    if isinstance(content, str):
+        return content
+    if isinstance(content, list):
+        parts = []
+        for item in content:
+            if isinstance(item, dict):
+                text = item.get("text")
+                if text:
+                    parts.append(str(text))
+            elif item:
+                parts.append(str(item))
+        return "".join(parts).strip()
+    if content is None:
+        return ""
+    return str(content)
 
 
 class HealthView(APIView):
@@ -79,24 +102,59 @@ class ChatView(APIView):
             conversation_id=conversation_id,
             limit=max(history_limit, 0),
         )
-        messages = history + [{"role": "user", "content": message}]
 
-        try:
-            response = get_ollama_client().chat(
-                model=model,
-                messages=messages,
-                # Wait a maximum of 30 seconds
-                options={"timeout": 30},
-            )
-        except Exception:
-            return Response(
-                {
-                    "error": "Failed to call Ollama.",
-                },
-                status=status.HTTP_502_BAD_GATEWAY,
-            )
+        llm = ChatOllama(
+            model=model,
+            base_url=os.getenv("OLLAMA_HOST"),
+        )
 
-        reply = response.get("message", {}).get("content", "")
+        llm_with_tools = llm.bind_tools([predict_color_palette])
+
+        langchain_messages = [
+            SystemMessage(
+                content=(
+                    "You (you are yourself not Lyra) are now working with Lyra (another AI Model), a professional color-harmony AI Model.\n"
+                    "If the user asks for colors, color palettes, gradients, or Lyra color prediction, you MUST call the tool predict_color_palette. "
+                    "( you can generate color by your self, but at least you need to call the tool predict_color_palette once )\n"
+                    "Otherwise just answer normally chat with user, don't reply colors to them.\n"
+                    "When describing palettes (describe it only if user asks for colors, color palettes, gradients, or Lyra color prediction ), always list all HEX colors in order. "
+                    "And at final, you need to also have some not related conversations with user.\n"
+                    "Finally, when answering users, DON'T LET THEM KNOW that you've gone through the above considerations IF THEY DON'T ASK."
+                )
+            )
+        ]
+
+        for msg in history:
+            if msg["role"] == "user":
+                langchain_messages.append(HumanMessage(content=msg["content"]))
+            else:
+                langchain_messages.append(AIMessage(content=msg["content"]))
+
+        langchain_messages.append(HumanMessage(content=message))
+
+        ai_msg = llm_with_tools.invoke(langchain_messages)
+
+        if ai_msg.tool_calls:
+            for tool_call in ai_msg.tool_calls:
+                if tool_call["name"] == "predict_color_palette":
+                    result = predict_color_palette.invoke(tool_call["args"])
+
+                    langchain_messages.append(ai_msg)
+
+                    langchain_messages.append(
+                        ToolMessage(
+                            content=str(result),
+                            tool_call_id=tool_call["id"],
+                            name=tool_call["name"],
+                        )
+                    )
+
+            final = llm.invoke(langchain_messages)
+            reply = normalize_ai_content(final.content)
+
+        else:
+            reply = normalize_ai_content(ai_msg.content)
+
         ChatMessage.objects.bulk_create(
             [
                 ChatMessage(
@@ -162,9 +220,7 @@ class ConversationListView(APIView):
                 .order_by("created_at", "id")
                 .first()
             )
-            count = visible_messages.filter(
-                conversation_id=conversation_id
-            ).count()
+            count = visible_messages.filter(conversation_id=conversation_id).count()
 
             summaries.append(
                 {

@@ -21,7 +21,7 @@ const ChatHeaderContent: React.FC<Props> = ({ onOpenSidebar }) => {
         <div className="hidden sm:block w-10 h-10">
           <LyraAssistantIcon className="w-full h-full" />
         </div>
-        <span className="font-semibold text-sm sm:text-lg text-slate-700">Lyra 2 + Gemma 3</span>
+        <span className="font-semibold text-sm sm:text-lg text-slate-700">Lyra 2 + Llama 3</span>
       </div>
       <Link 
         to="/"

@@ -5,6 +5,7 @@ import ChatHeaderContent from "./chat-components/ChatHeaderContent";
 import ChatInputArea from "./chat-components/ChatInputArea";
 
 import LyraAssistantIcon from "./components/LyraAssistantIcon";
+import HeartIcon from "./components/HeartIcon";
 import { llmGenTitle } from "./llm-fns/llmGenTitle";
 
 type ChatRole = "user" | "assistant";
@@ -23,7 +24,50 @@ export interface ConversationSummary {
   updated_at: string | null;
 }
 
-const GEMMA_CHAT_API_BASE = "http://localhost:8000/llmchat";
+const LLM_CHAT_API_BASE = "http://localhost:8000/llmchat";
+
+const extractHexColors = (content: string): string[] => {
+  const matches = content.match(/#(?:[0-9a-fA-F]{6}|[0-9a-fA-F]{3})\b/g);
+  return matches ?? [];
+};
+
+const toGradientTriples = (hexColors: string[]): [string, string, string][] => {
+  const triples: [string, string, string][] = [];
+  for (let i = 0; i + 2 < hexColors.length && triples.length < 3; i += 3) {
+    const a = hexColors[i];
+    const b = hexColors[i + 1];
+    const c = hexColors[i + 2];
+    if (!a || !b || !c) break;
+    triples.push([a, b, c]);
+  }
+  return triples;
+};
+
+const AssistantGradientPreview = ({ content }: { content: string }) => {
+  const triples = toGradientTriples(extractHexColors(content));
+  if (triples.length === 0) return null;
+
+  return (
+    <div className="mt-8 grid grid-cols-3 gap-6">
+      {triples.map(([a, b, c], index) => (
+        <div key={`${a}-${b}-${c}-${index}`} className="flex flex-col items-center gap-2">
+          <div className="group/gradient relative h-32 w-32">
+            <div
+              className="h-32 w-32 rounded-full transition-opacity duration-200"
+              style={{
+                backgroundImage: `linear-gradient(45deg in oklab, ${a}, ${b}, ${c})`,
+              }}
+            />
+            <div className="absolute inset-0 flex items-center justify-center rounded-full opacity-0 transition-opacity duration-200 group-hover/gradient:opacity-100 cursor-pointer">
+              <HeartIcon className="size-10 text-white" />
+            </div>
+          </div>
+          <p className="mt-2 text-chat-lyra-gradient text-slate-500">{`${a} > ${b} > ${c}`}</p>
+        </div>
+      ))}
+    </div>
+  );
+};
 
 // Handles smooth typing effects
 const TypewriterMessage = memo(({ content }: { content: string }) => {
@@ -78,7 +122,7 @@ export function ChatLyraPage() {
 
   const fetchConversations = async () => {
     try {
-      const response = await fetch(`${GEMMA_CHAT_API_BASE}/conversations/`);
+      const response = await fetch(`${LLM_CHAT_API_BASE}/conversations/`);
       if (!response.ok) return;
 
       const data = await response.json();
@@ -95,7 +139,7 @@ export function ChatLyraPage() {
 
     try {
       const response = await fetch(
-        `${GEMMA_CHAT_API_BASE}/conversations/${targetConversationId}/`
+        `${LLM_CHAT_API_BASE}/conversations/${targetConversationId}/`
       );
       if (!response.ok) throw new Error("Failed to load conversation");
 
@@ -125,7 +169,7 @@ export function ChatLyraPage() {
 
     try {
       const response = await fetch(
-        `${GEMMA_CHAT_API_BASE}/conversations/${targetConversationId}/`,
+        `${LLM_CHAT_API_BASE}/conversations/${targetConversationId}/`,
         { method: "DELETE" }
       );
       if (!response.ok) throw new Error("Failed to delete conversation");
@@ -171,7 +215,7 @@ export function ChatLyraPage() {
     const previousTalk = messages.map((msg) => msg.content);
 
     void llmGenTitle(
-      `${GEMMA_CHAT_API_BASE}/chat/`,
+      `${LLM_CHAT_API_BASE}/chat/`,
       conversationId,
       previousTalk
     ).catch(() => {
@@ -197,7 +241,7 @@ export function ChatLyraPage() {
     setError(null);
 
     try {
-      const response = await fetch(`${GEMMA_CHAT_API_BASE}/chat/`, {
+      const response = await fetch(`${LLM_CHAT_API_BASE}/chat/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -285,13 +329,16 @@ export function ChatLyraPage() {
                   <div className={`group relative max-w-85/100 px-1 py-1`}>
                     <div className={`text-chat-lyra leading-relaxed ${
                       msg.role === "user" 
-                        ? "bg-slate-900 text-white px-5 py-3 rounded-full rounded-tr-none shadow-sm" 
-                        : "text-slate-700 pt-2"
+                        ? "bg-slate-900 text-white px-5 py-3 rounded-3xl rounded-tr-none shadow-sm" 
+                        : "text-slate-700 pt-2 max-w-160"
                     }`}>
                       {msg.role === "assistant" && idx === messages.length - 1 ? (
                         <TypewriterMessage content={msg.content} />
                       ) : (
                         msg.content
+                      )}
+                      {msg.role === "assistant" && (
+                        <AssistantGradientPreview content={msg.content} />
                       )}
                     </div>
                   </div>
