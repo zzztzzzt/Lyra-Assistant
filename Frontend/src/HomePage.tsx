@@ -54,6 +54,8 @@ export function HomePage() {
       `http://localhost:8000/lyraassistant/predict/?oklch=${color.l},${color.c},${color.h}`
       // Genie Framework Ver
       //`http://localhost:8000/api/predict?oklch=${color.l},${color.c},${color.h}`
+      // FastAPI ( HF Space ) Ver
+      //`/lyraassistant/predict/?oklch=${color.l},${color.c},${color.h}`
     );
 
     if (!response.ok) {

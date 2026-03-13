@@ -35,6 +35,8 @@ const Header: React.FC<Props> = ({
           <a
             className={`duration-600 ${ isDarkMode? "hover:!text-white" : "hover:!text-black" }`}
             style={{ color: accentM }} href="https://github.com/zzztzzzt/Lyra-AI"
+            target="_blank"
+            rel="noopener noreferrer"
           >
             &nbsp;2.5&nbsp;
           </a>
@@ -46,6 +48,8 @@ const Header: React.FC<Props> = ({
             className={`duration-600 ${ isDarkMode? "hover:!text-white" : "hover:!text-black" }`}
             style={{ color: accentM }}
             href="https://github.com/LuxDL/Lux.jl"
+            target="_blank"
+            rel="noopener noreferrer"
           >
             &nbsp;Lux.jl&nbsp;
           </a>
@@ -59,6 +63,8 @@ const Header: React.FC<Props> = ({
             className={`duration-600 ${ isDarkMode? "hover:!text-white" : "hover:!text-black" }`}
             style={{ color: accentM }}
             href="https://github.com/zzztzzzt/Lyra-AI"
+            target="_blank"
+            rel="noopener noreferrer"
           >
             GitHub {'>'}
           </a>
