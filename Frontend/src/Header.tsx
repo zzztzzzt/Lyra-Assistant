@@ -74,9 +74,9 @@ const Header: React.FC<Props> = ({
       </div>
 
       <div className="xl:max-w-320 xl:mx-auto xl:flex xl:flex-row xl:justify-between xl:items-center">
-        <div className="mx-auto h-50 w-full max-w-120 grid grid-cols-3 px-6 gap-6">
+        <div className="card-header-container">
           <div
-            className={`card-shape-header card-header px-4 justify-center font-lyra text-2xl ${ isDarkMode? "dark-card-hover" : "light-card-hover" }`}
+            className={`card-shape-header card-header px-4 justify-center font-lyra text-lg md:text-2xl ${ isDarkMode? "dark-card-hover" : "light-card-hover" }`}
             style={{ boxShadow: `0 0 10px 3px oklch(from ${ accentM } l c h / 0.5)` }}
             onClick={() => setisModePanelOpen(true)}
           >
@@ -97,9 +97,9 @@ const Header: React.FC<Props> = ({
 
         <div className="mx-auto xl:-mt-5.5 py-8 xl:py-0 px-6 xl:px-3 xl:w-full max-xl:max-w-120"><ColorController color={colorM} setColor={setColorM} /></div>
 
-        <div className="mx-auto h-50 w-full max-w-120 grid grid-cols-3 px-6 gap-6">
+        <div className="card-header-container">
           <div
-            className={`card-shape-header card-header px-4 justify-center font-lyra text-white text-4xl bg-default-gray
+            className={`card-shape-header card-header px-4 justify-center font-lyra text-white text-2xl md:text-4xl bg-default-gray
               ${ isDarkMode? "dark-card-hover hover:bg-black" : "light-card-hover hover:bg-white" }
             `}
             style={{ boxShadow: `0 0 10px 3px oklch(from ${ accentM } l c h / 0.5)` }}
@@ -117,18 +117,18 @@ const Header: React.FC<Props> = ({
             <div
               className={`rounded-full flex items-center justify-center duration-600
                 ${ isMoonCardHovered? isDarkMode? "bg-white" : "bg-black" : "bg-default-gray" }
-                ${ isDarkMode? "h-12 w-12 shadow-sun" : "h-15 w-15" }
+                ${ isDarkMode? "h-9 md:h-12 w-9 md:w-12 shadow-sun" : "h-12 md:h-15 w-12 md:w-15" }
               `}
             >
               <div
                 className={`rounded-full duration-600
-                  ${ isDarkMode? "ml-0 bg-black h-0 w-0" : "ml-6 bg-white h-9 w-9" }
+                  ${ isDarkMode? "ml-0 bg-black h-0 w-0" : "ml-6 bg-white h-6 md:h-9 w-6 md:w-9" }
                 `}
               ></div>
             </div>
           </div>
           <div
-            className={`card-shape-header card-header px-4 justify-center font-lyra text-2xl ${ isDarkMode? "dark-card-hover" : "light-card-hover" }`}
+            className={`card-shape-header card-header px-4 justify-center font-lyra text-lg md:text-2xl ${ isDarkMode? "dark-card-hover" : "light-card-hover" }`}
             style={{ boxShadow: `0 0 10px 3px oklch(from ${ accentM } l c h / 0.5)` }}
           >
             Tools
