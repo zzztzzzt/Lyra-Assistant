@@ -3,6 +3,7 @@ import Header from "./Header";
 import ModePanel from "./components/ModePanel";
 import GradientBox from "./components/GradientBox";
 import type { OklchState } from "./oklchTypes";
+import { jitterOklchList } from "./fns/colorJitter";
 
 const arrToOklch = ([l, c, h]: [number, number, number]): OklchState => ({ l, c, h });
 
@@ -100,8 +101,12 @@ export function HomePage() {
         .map((index) => firstPalette[index])
         .filter((seed): seed is OklchState => Boolean(seed));
 
+      const jitteredSeeds = jitterOklchList(seeds);
+
       // Second fetches: each seed returns another 9-color palette -> 3 pairs each
-      const secondResults = await Promise.all(seeds.map((seed) => fetchPrediction(seed)));
+      const secondResults = await Promise.all(
+        jitteredSeeds.map((seed) => fetchPrediction(seed)),
+      );
 
       const allTriples: GradientTriple[] = [
         ...buildTriples(firstPalette, firstHexPalette),

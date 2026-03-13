@@ -49,7 +49,9 @@ def predict_palette_from_oklch(
     Returns: (palette_oklch, palette_hex, boldness).
     """
     if boldness is None:
-        boldness = random.uniform(1.0, 1.25)
+        # currently take out boldness to produce more stable results
+        #boldness = random.uniform(1.0, 1.25)
+        boldness = random.uniform(1.0, 1.0)
 
     main_oklab = oklch_to_oklab_vec(np.array([l, c, h], dtype=np.float32))
     palette_oklab = predict_palette_oklab(model, main_oklab, boldness=boldness, device=device)
