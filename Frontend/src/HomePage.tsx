@@ -37,13 +37,13 @@ interface PredictResponse {
 
 export function HomePage() {
   const [isModePanelOpen, setisModePanelOpen] = useState<boolean>(false);
-  const [isDefaultMode, setIsDefaultMode] = useState<boolean>(true);
+  const [isDefaultMode, setIsDefaultMode] = useState<boolean>(false);
   const [isCircularMode, setIsCircularMode] = useState<boolean>(false);
-  const [isClipMode, setIsClipMode] = useState<boolean>(false);
+  const [isClipMode, setIsClipMode] = useState<boolean>(true);
 
   const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
 
-  const [colorM, setColorM] = useState<OklchState>({ l: 0.92, c: 0.141, h: 252 });
+  const [colorM, setColorM] = useState<OklchState>({ l: 0.5, c: 0.135, h: 353 });
   const accentM = useMemo(() => toStr(colorM), [colorM]);
 
   const [palette, setPalette] = useState<OklchState[]>([]);
