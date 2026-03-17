@@ -211,7 +211,7 @@ def convert(jld2_path: Path, out_pt: Path, out_meta: Path | None) -> Tuple[Path,
         meta = {
             "source": str(jld2_path),
             "format": "pytorch_state_dict",
-            "architecture": "Linear(3,64)-ReLU-LayerNorm(64)-Linear(64,64)-ReLU-Linear(64,27)",
+            "architecture": "Linear(3,64)-Mish-LayerNorm(64)-Linear(64,64)-Mish-Linear(64,27)",
             "output": "27-dim offsets in OKLab for 9 colors",
             "notes": "Lyra-specific converter for Lux TrainState JLD2.",
         }
