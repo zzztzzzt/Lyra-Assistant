@@ -1,9 +1,10 @@
-import { useState, useRef, useEffect, memo } from "react";
+import { useState, useRef, useEffect } from "react";
 
 import ChatSideBarContent from "./chat-components/ChatSideBarContent";
 import ChatHeaderContent from "./chat-components/ChatHeaderContent";
 import ChatInputArea from "./chat-components/ChatInputArea";
 import AssistantGradientPreview from "./chat-components/AssistantGradientPreview";
+import TypewriterMessage from "./chat-components/TypewriterMessage";
 
 import LyraAssistantIcon from "./components/LyraAssistantIcon";
 import { llmGenTitle } from "./llm-fns/llmGenTitle";
@@ -25,42 +26,6 @@ export interface ConversationSummary {
 }
 
 const LLM_CHAT_API_BASE = "http://localhost:8000/llmchat";
-
-// Handles smooth typing effects
-const TypewriterMessage = memo(({ content }: { content: string }) => {
-  const [visibleChars, setVisibleChars] = useState<string[]>([]);
-  const index = useRef(0);
-
-  useEffect(() => {
-    setVisibleChars([]);
-    index.current = 0;
-
-    const timer = setInterval(() => {
-      if (index.current < content.length) {
-        const nextChar = content.charAt(index.current);
-        setVisibleChars((prev) => [...prev, nextChar]);
-        index.current += 1;
-      } else {
-        clearInterval(timer);
-      }
-    }, 5);
-
-    return () => clearInterval(timer);
-  }, [content]);
-
-  return (
-    <span>
-      {visibleChars.map((char, i) => (
-        <span 
-          key={i} 
-          className="animate-char"
-        >
-          {char === "\n" ? <br /> : char}
-        </span>
-      ))}
-    </span>
-  );
-});
 
 export function ChatLyraPage() {
   const [currentLLM, setCurrentLLM] = useState<string>("detecting ...");
