@@ -25,7 +25,7 @@ function getWholePrompt(chatHistory: string[]): string {
 
   return ` 
     please name a title ( don't be too long, but it needs to be meaningful ) for below conversation : 
-    ( PLEASE NOTE THAT ONLY REPLY THE TITLE ( THE TITLE I TELL YOU TO MAKE ) ON YOUR NEXT REPLY AND PLEASE DONT'T REPLY COLOR CODES, JUST TITLE )
+    ( PLEASE NOTE THAT ONLY REPLY THE TITLE ( THE TITLE I TELL YOU TO MAKE ) ON YOUR NEXT REPLY )
     ${ restoredHistory }
   `;
 }

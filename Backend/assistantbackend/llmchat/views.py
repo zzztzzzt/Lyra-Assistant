@@ -108,7 +108,11 @@ class ChatView(APIView):
             base_url=os.getenv("OLLAMA_HOST"),
         )
 
-        llm_with_tools = llm.bind_tools([predict_color_palette])
+        llm_invoker = (
+            llm
+            if is_system_call
+            else llm.bind_tools([predict_color_palette])
+        )
 
         langchain_messages = [
             SystemMessage(
@@ -132,7 +136,7 @@ class ChatView(APIView):
 
         langchain_messages.append(HumanMessage(content=message))
 
-        ai_msg = llm_with_tools.invoke(langchain_messages)
+        ai_msg = llm_invoker.invoke(langchain_messages)
 
         if ai_msg.tool_calls:
             for tool_call in ai_msg.tool_calls:
