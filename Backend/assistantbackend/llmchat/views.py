@@ -1,5 +1,4 @@
 import os
-import re
 import uuid
 import ollama
 from langchain_ollama import ChatOllama
@@ -13,7 +12,7 @@ from rest_framework import status
 from .models import ChatMessage
 from .serializers import ChatSerializer
 
-from .tools import predict_color_palette
+from .tools import pick_oklch_by_semantics, predict_color_palette
 
 
 def get_ollama_client() -> ollama.Client:
@@ -111,15 +110,18 @@ class ChatView(APIView):
         llm_invoker = (
             llm
             if is_system_call
-            else llm.bind_tools([predict_color_palette])
+            else llm.bind_tools([pick_oklch_by_semantics, predict_color_palette])
         )
 
         langchain_messages = [
             SystemMessage(
                 content=(
                     "You (you are yourself not Lyra) are now working with Lyra (another AI Model), a professional color-harmony AI Model.\n"
-                    "If the user asks for colors, color palettes, gradients, or Lyra color prediction, you MUST call the tool predict_color_palette. "
-                    "( you can generate color by your self, but at least you need to call the tool predict_color_palette once )\n"
+                    "If the user asks for colors, color palettes, gradients, or Lyra color prediction, you MUST call tools in this exact order:\n"
+                    "1) pick_oklch_by_semantics (pass only user_input)\n"
+                    "2) predict_color_palette (use the L/C/H you got from step 1)\n"
+                    "After you call pick_oklch_by_semantics, use those L/C/H value to call predict_color_palette. \n"
+                    "(If the user's request is in other languages, translate the color word to a simple English color name, then call pick_oklch_by_semantics)\n"
                     "Otherwise just answer normally chat with user, don't reply colors to them.\n"
                     "When describing palettes (describe it only if user asks for colors, color palettes, gradients, or Lyra color prediction ), always list all HEX colors in order. "
                     "And at final, you need to also have some not related conversations with user.\n"
@@ -139,19 +141,27 @@ class ChatView(APIView):
         ai_msg = llm_invoker.invoke(langchain_messages)
 
         if ai_msg.tool_calls:
+            tools_by_name = {
+                "pick_oklch_by_semantics": pick_oklch_by_semantics,
+                "predict_color_palette": predict_color_palette,
+            }
+
+            langchain_messages.append(ai_msg)
+
             for tool_call in ai_msg.tool_calls:
-                if tool_call["name"] == "predict_color_palette":
-                    result = predict_color_palette.invoke(tool_call["args"])
+                tool_impl = tools_by_name.get(tool_call.get("name"))
+                if not tool_impl:
+                    continue
 
-                    langchain_messages.append(ai_msg)
+                result = tool_impl.invoke(tool_call.get("args", {}))
 
-                    langchain_messages.append(
-                        ToolMessage(
-                            content=str(result),
-                            tool_call_id=tool_call["id"],
-                            name=tool_call["name"],
-                        )
+                langchain_messages.append(
+                    ToolMessage(
+                        content=str(result),
+                        tool_call_id=tool_call["id"],
+                        name=tool_call["name"],
                     )
+                )
 
             final = llm.invoke(langchain_messages)
             reply = normalize_ai_content(final.content)
