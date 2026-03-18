@@ -8,6 +8,7 @@ import TypewriterMessage from "./chat-components/TypewriterMessage";
 
 import LyraAssistantIcon from "./components/LyraAssistantIcon";
 import { llmGenTitle } from "./llm-fns/llmGenTitle";
+import { extractHexColors } from "./chat-fns/extractHexColors";
 
 type ChatRole = "user" | "assistant";
 
@@ -26,6 +27,16 @@ export interface ConversationSummary {
 }
 
 const LLM_CHAT_API_BASE = "http://localhost:8000/llmchat";
+const LYRA_ASSISTANT_API_BASE = "http://localhost:8000/lyraassistant";
+
+interface PredictResponse {
+  status: string;
+  mode: "oklch";
+  input_oklch: [number, number, number];
+  palette_hex: string[];
+  palette_oklch: [number, number, number][];
+  boldness: number;
+}
 
 export function ChatLyraPage() {
   const [currentLLM, setCurrentLLM] = useState<string>("detecting ...");
@@ -41,6 +52,29 @@ export function ChatLyraPage() {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState<boolean>(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const titleGeneratedConversationsRef = useRef<Set<string>>(new Set());
+  const derivedRequestedMessageIdsRef = useRef<Set<string>>(new Set());
+  const [derivedGradients, setDerivedGradients] = useState<
+    Record<string, { state: "idle" | "loading" | "done" | "error"; content?: string }>
+  >({});
+
+  const fetchPredictionByHex = async (hex: string): Promise<PredictResponse> => {
+    const response = await fetch(
+      `${LYRA_ASSISTANT_API_BASE}/predict/?hex=${encodeURIComponent(hex)}&jitter=1`
+    );
+
+    if (!response.ok) {
+      let msg = "Failed to get prediction data";
+      try {
+        const errorBody = await response.json();
+        msg = errorBody?.error || msg;
+      } catch {
+        // ignore
+      }
+      throw new Error(msg);
+    }
+
+    return response.json();
+  };
 
   const fetchConversations = async () => {
     try {
@@ -58,6 +92,8 @@ export function ChatLyraPage() {
     setIsLoadingConversation(true);
     setPendingTitleConversationId(null);
     setError(null);
+    setDerivedGradients({});
+    derivedRequestedMessageIdsRef.current = new Set();
 
     try {
       const response = await fetch(
@@ -104,6 +140,8 @@ export function ChatLyraPage() {
         setConversationId(null);
         setPendingTitleConversationId(null);
         setMessages([]);
+        setDerivedGradients({});
+        derivedRequestedMessageIdsRef.current = new Set();
       }
     } catch {
       setError("Delete conversation failed");
@@ -115,6 +153,58 @@ export function ChatLyraPage() {
   useEffect(() => {
     void fetchConversations();
   }, []);
+
+  useEffect(() => {
+    const candidates = messages.filter((m) => m.role === "assistant");
+    for (const msg of candidates) {
+      if (derivedRequestedMessageIdsRef.current.has(msg.id)) continue;
+
+      const allHexes = extractHexColors(msg.content);
+      // Auto-derive when the assistant returns 3 gradients ( 9 colors ). Allow the assistant
+      // to repeat some of those colors later in the message ( e.g. in explanatory text ),
+      // but still avoid triggering on messages that contain many unrelated hex codes.
+      if (allHexes.length < 9) continue;
+      const firstNine = allHexes.slice(0, 9);
+      const firstNineSet = new Set(firstNine);
+      if (firstNineSet.size !== 9) continue;
+      const extrasAreOnlyRepeats = allHexes.slice(9).every((h) => firstNineSet.has(h));
+      if (!extrasAreOnlyRepeats) continue;
+      const hexes = firstNine;
+
+      const seed1 = hexes[1];
+      const seed2 = hexes[4];
+      const seed3 = hexes[7];
+      if (!seed1 || !seed2 || !seed3) continue;
+
+      derivedRequestedMessageIdsRef.current.add(msg.id);
+      setDerivedGradients((prev) => ({
+        ...prev,
+        [msg.id]: { state: "loading" },
+      }));
+
+      void (async () => {
+        try {
+          const derivedResults = await Promise.all([
+            fetchPredictionByHex(seed1),
+            fetchPredictionByHex(seed2),
+            fetchPredictionByHex(seed3),
+          ]);
+          const derivedHexes = derivedResults.flatMap((r) => r.palette_hex);
+          const derived = derivedHexes.join(" ");
+
+          setDerivedGradients((prev) => ({
+            ...prev,
+            [msg.id]: { state: "done", content: derived },
+          }));
+        } catch {
+          setDerivedGradients((prev) => ({
+            ...prev,
+            [msg.id]: { state: "error" },
+          }));
+        }
+      })();
+    }
+  }, [messages, conversationId]);
 
   // Auto Scroll
   useEffect(() => {
@@ -260,7 +350,11 @@ export function ChatLyraPage() {
                         msg.content
                       )}
                       {msg.role === "assistant" && (
-                        <AssistantGradientPreview content={msg.content} />
+                        <AssistantGradientPreview
+                          content={msg.content}
+                          extraContent={derivedGradients[msg.id]?.content}
+                          extraState={derivedGradients[msg.id]?.state ?? "idle"}
+                        />
                       )}
                     </div>
                   </div>
