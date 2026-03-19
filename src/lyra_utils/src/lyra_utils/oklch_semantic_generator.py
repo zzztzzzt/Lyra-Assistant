@@ -69,7 +69,7 @@ class OKLCHSemanticGenerator:
 
     def _random_hue(self, h_min, h_max):
         if h_min <= h_max:
-            return random.uniform(h_min, h_max)
+            return random.uniform(h_min, h_max) % 360
         span = (360 - h_min) + h_max
         return (h_min + random.uniform(0, span)) % 360
 

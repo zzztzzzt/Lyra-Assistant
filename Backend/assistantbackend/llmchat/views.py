@@ -1,5 +1,7 @@
 import os
 import uuid
+import json
+import re
 import ollama
 from langchain_ollama import ChatOllama
 from langchain_core.messages import HumanMessage, AIMessage, ToolMessage, SystemMessage
@@ -62,6 +64,30 @@ def normalize_ai_content(content) -> str:
     return str(content)
 
 
+def try_parse_tool_call(text: str):
+    try:
+        match = re.search(r'\{.*\}', text, re.DOTALL)
+        if not match:
+            return None
+
+        data = json.loads(match.group())
+
+        name = data.get("name")
+        args = data.get("parameters") or data.get("args") or {}
+
+        if not name:
+            return None
+
+        return {
+            "name": name,
+            "args": args,
+            "id": str(uuid.uuid4()),
+        }
+
+    except Exception:
+        return None
+
+
 class HealthView(APIView):
     def get(self, request):
         return Response(
@@ -116,16 +142,15 @@ class ChatView(APIView):
         langchain_messages = [
             SystemMessage(
                 content=(
-                    "You (you are yourself not Lyra) are now working with Lyra (another AI Model), a professional color-harmony AI Model.\n"
-                    "If the user asks for colors, color palettes, gradients, or Lyra color prediction, you MUST call tools in this exact order:\n"
-                    "1) pick_oklch_by_semantics (pass only user_input)\n"
-                    "2) predict_color_palette (use the L/C/H you got from step 1)\n"
-                    "After you call pick_oklch_by_semantics, use those L/C/H value to call predict_color_palette. \n"
-                    "(If the user's request is in other languages, translate the color word to a simple English color name, then call pick_oklch_by_semantics)\n"
-                    "Otherwise just answer normally chat with user, don't reply colors to them.\n"
-                    "When describing palettes (describe it only if user asks for colors, color palettes, gradients, or Lyra color prediction ), always list all HEX colors in order. "
-                    "And at final, you need to also have some not related conversations with user.\n"
-                    "Finally, when answering users, DON'T LET THEM KNOW that you've gone through the above considerations IF THEY DON'T ASK."
+                    "You are now working with Lyra, a professional color-harmony AI Model. \n"
+                    "If the user asks for colors, color palettes, gradients, or Lyra color prediction, you MUST call tools in this exact order: \n"
+                    "( Otherwise just answer normally chat with user, don't reply colors to them. ) \n"
+                    "1) pick_oklch_by_semantics \n"
+                    "2) predict_color_palette \n"
+                    "( After you call pick_oklch_by_semantics, use the L/C/H values ( The decimal parts of L/C/H values must be retained in full ) from pick_oklch_by_semantics to call predict_color_palette. ) \n"
+                    "When describing palettes ( describe it only if user asks for colors, color palettes, gradients, or Lyra color prediction ), always list all HEX colors in order. "
+                    "And at final, you need to also have some not related conversations with user. \n"
+                    "Finally, when answering users, DON'T LET THEM KNOW that you've gone through the above considerations IF THEY DON'T ASK. "
                 )
             )
         ]
@@ -138,36 +163,58 @@ class ChatView(APIView):
 
         langchain_messages.append(HumanMessage(content=message))
 
-        ai_msg = llm_invoker.invoke(langchain_messages)
+        tools_by_name = {
+            "pick_oklch_by_semantics": pick_oklch_by_semantics,
+            "predict_color_palette": predict_color_palette,
+        }
 
-        if ai_msg.tool_calls:
-            tools_by_name = {
-                "pick_oklch_by_semantics": pick_oklch_by_semantics,
-                "predict_color_palette": predict_color_palette,
-            }
+        MAX_TOOL_CALL_ROUNDS = 5
 
+        for step in range(MAX_TOOL_CALL_ROUNDS):
+            ai_msg = llm_invoker.invoke(langchain_messages)
             langchain_messages.append(ai_msg)
 
-            for tool_call in ai_msg.tool_calls:
-                tool_impl = tools_by_name.get(tool_call.get("name"))
+            tool_calls = ai_msg.tool_calls or []
+
+            # Fallback : parse tool call from text if no structured tool_calls
+            if not tool_calls:
+                parsed = try_parse_tool_call(ai_msg.content)
+                if parsed:
+                    tool_calls = [parsed]
+
+            if not tool_calls:
+                reply = normalize_ai_content(ai_msg.content)
+                break
+
+            for tool_call in tool_calls:
+                tool_name = tool_call.get("name")
+                tool_impl = tools_by_name.get(tool_name)
+
                 if not tool_impl:
                     continue
 
-                result = tool_impl.invoke(tool_call.get("args", {}))
+                args = tool_call.get("args", {})
+                result = tool_impl.invoke(args)
+
+                hint = ""
+
+                if tool_name == "pick_oklch_by_semantics":
+                    hint = (
+                        "\n\nIMPORTANT:\n"
+                        "You MUST now call `predict_color_palette` using the L, C, H values from this result ( please turn them to l, c, h, not L, C, H ).\n"
+                        "Do NOT answer yet.\n"
+                    )
 
                 langchain_messages.append(
                     ToolMessage(
-                        content=str(result),
+                        content=str(result) + hint,
                         tool_call_id=tool_call["id"],
-                        name=tool_call["name"],
+                        name=tool_name,
                     )
                 )
 
-            final = llm.invoke(langchain_messages)
-            reply = normalize_ai_content(final.content)
-
         else:
-            reply = normalize_ai_content(ai_msg.content)
+            reply = "Something went wrong in tool execution loop."
 
         ChatMessage.objects.bulk_create(
             [

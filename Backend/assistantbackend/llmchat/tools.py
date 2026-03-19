@@ -37,12 +37,9 @@ def pick_oklch_by_semantics(user_input: str):
 
 @tool
 def predict_color_palette(
-    l: float | None = None,
-    c: float | None = None,
-    h: float | None = None,
-    L: float | None = None,
-    C: float | None = None,
-    H: float | None = None,
+    l: float,
+    c: float,
+    h: float,
 ):
     """
     Generate a color palette prediction from OKLCH color space using LyraAssistant API.
@@ -61,16 +58,6 @@ def predict_color_palette(
     """
 
     try:
-        if l is None and L is not None:
-            l = L
-        if c is None and C is not None:
-            c = C
-        if h is None and H is not None:
-            h = H
-
-        if l is None or c is None or h is None:
-            return {"error": "Missing required OKLCH values (l, c, h)."}
-
         palette_oklch, palette_hex, boldness = predict_from_oklch(l, c, h)
 
         print("[FROM LYRA]", palette_hex)
