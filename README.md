@@ -76,6 +76,16 @@ go into `Backend/assistantbackend` folder
 
 ### Step 4. Setup Frontend
 
+**Install Bun**
+
+Bun Link : [https://github.com/oven-sh/bun](https://github.com/oven-sh/bun)
+
+go into `Frontend` folder
+
+run `bun install`
+
+and then run `bun dev` to open Local Assistant
+
 ## Use Natural Language to fine-tune Color Ideas
 
 Go to page `/chat-lyra` to get awesome color gradients
@@ -114,6 +124,7 @@ if there are Errors during conversion, use below command to debug
 python -m uv run python scripts/model_conversion_debug/inspect_lyra_pt.py models/trained_color_model.pt
 ```
 also check original JLD2 model
+
 ```shell
 python -m uv run python scripts/model_conversion_debug/inspect_lyra_jld2.py models/trained_color_model.jld2
 ```
