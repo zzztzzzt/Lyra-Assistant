@@ -34,12 +34,6 @@ Lyra-Assistant uses Django & Django REST framework for backend. Django licensed 
 
 Lyra-Assistant uses React & Tailwind CSS for Frontend Design. And uses Bun as build tool. React & Tailwind CSS licensed under the MIT License. Bun has additional description in their license page, please see link below.
 
-![1.0showcase](https://github.com/zzztzzzt/Lyra-Assistant/blob/main/showcase/Lyra_Assistant_1.0_showcase.webp)
-
-**( Dark Mode Support )**
-
-![1.0showcase2](https://github.com/zzztzzzt/Lyra-Assistant/blob/main/showcase/Lyra_Assistant_1.0_showcase_2.webp)
-
 ## Get Started
 
 ### Step 1. Install Ollama & Llama 3.1
@@ -196,6 +190,16 @@ INSTALLED_APPS = [
     '[YOURAPPNAME]',
 ]
 ```
+
+## Version History
+
+#### Lyra Assistant 1.0
+
+![1.0showcase](https://github.com/zzztzzzt/Lyra-Assistant/blob/main/showcase/Lyra_Assistant_1.0_showcase.webp)
+
+**( Dark Mode Showcase )**
+
+![1.0showcase2](https://github.com/zzztzzzt/Lyra-Assistant/blob/main/showcase/Lyra_Assistant_1.0_showcase_2.webp)
 
 ## Project Dependencies Details
 
