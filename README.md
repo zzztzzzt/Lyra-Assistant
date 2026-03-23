@@ -76,6 +76,16 @@ go into `Backend/assistantbackend` folder
 
 ### Step 4. Setup Frontend
 
+## Use Natural Language to fine-tune Color Ideas
+
+Go to page `/chat-lyra` to get awesome color gradients
+
+![Chatshowcase](https://github.com/zzztzzzt/Lyra-Assistant/blob/main/showcase/Lyra_Chat_showcase.png)
+
+**( Mobile Supported )**
+
+![Chatshowcase2](https://github.com/zzztzzzt/Lyra-Assistant/blob/main/showcase/Lyra_Chat_showcase_2.png)
+
 ## Convert `Lux.jl` Model to `PyTorch` Model
 
 put your `trained_color_model.jld2` into `models` folder
