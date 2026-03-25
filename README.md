@@ -10,7 +10,7 @@
 
 <img src="https://github.com/zzztzzzt/Lyra-Assistant/blob/main/logo/logo.png" alt="lyra-logo" style="height: 280px; width: auto;" />
 
-### Lyra-Assistant : Next Generation AI Color Palette / Web Gradients.
+### Lyra-Assistant - Next Generation AI Color Palette / Web Gradients.
 
 IMPORTANT : This project is still in the development and testing stages, licensing terms may be updated in the future. Please don't do any commercial usage currently.
 
@@ -29,6 +29,8 @@ IMPORTANT : This project is still in the development and testing stages, licensi
 [![Tailwind CSS](https://img.shields.io/badge/tailwind_css-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://github.com/tailwindlabs/tailwindcss)
 
 **[ for Dependencies Details please see the end of this README ]**
+
+Lyra-Assistant leverages LangChain and Ollama to power the development of the Color Agent. LangChain & Ollama licensed under the MIT License.
 
 Lyra-Assistant uses Django & Django REST framework for backend. Django licensed under the BSD 3-Clause License. Django REST framework's license is in their License Page, please see link at the end of this README.
 
@@ -237,6 +239,12 @@ INSTALLED_APPS = [
 ![1.0showcase2](https://github.com/zzztzzzt/Lyra-Assistant/blob/main/showcase/Lyra_Assistant_1.0_showcase_2.webp)
 
 ## Project Dependencies Details
+
+LangChain License : [https://github.com/langchain-ai/langchain/blob/master/LICENSE](https://github.com/langchain-ai/langchain/blob/master/LICENSE)
+<br>
+
+Ollama License : [https://github.com/ollama/ollama/blob/main/LICENSE](https://github.com/ollama/ollama/blob/main/LICENSE)
+<br>
 
 Django License : [https://github.com/django/django/blob/main/LICENSE](https://github.com/django/django/blob/main/LICENSE)
 <br>
