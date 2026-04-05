@@ -29,7 +29,7 @@ const TypewriterMessage = memo(({ content }: { content: string }) => {
           key={i} 
           className="animate-char"
         >
-          {char === "\n" ? <br /> : char}
+          {char === "\n" ? <br /> : char === " " ? "\u00A0" : char}
         </span>
       ))}
     </span>
