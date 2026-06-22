@@ -1,5 +1,3 @@
-![logo-design](https://github.com/zzztzzzt/Lyra-Assistant/blob/main/logo/design.webp)
-
 # Lyra-Assistant
 
 [![Hugging Face Model](https://img.shields.io/badge/-HuggingFace-3B4252?style=flat&logo=huggingface&logoColor=)](https://huggingface.co/zzztzzzt)
